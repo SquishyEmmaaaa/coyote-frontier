@@ -4,15 +4,12 @@ using Content.Shared.GameTicking;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
-using Robust.Shared.Log;
 using Robust.Shared.Player;
 
 namespace Content.Client.Audio;
 
 public sealed class ClientGlobalSoundSystem : SharedGlobalSoundSystem
 {
-    private static readonly ISawmill Sawmill = Logger.GetSawmill("andy.audio");
-
     private const string PocketSizedAndyFolderSegment = "/PocketSizedAndy/";
     private static readonly ResolvedPathSpecifier AndyAnnouncementFallback = new("/Audio/Announcements/announce.ogg");
 
@@ -30,7 +27,6 @@ public sealed class ClientGlobalSoundSystem : SharedGlobalSoundSystem
     // Andy announcements
     private bool _andyAudioEnabled = true;
     private List<EntityUid?> _andyAudio = new(1);
-    private bool _andyDebug;
 
     public override void Initialize()
     {
@@ -44,7 +40,6 @@ public sealed class ClientGlobalSoundSystem : SharedGlobalSoundSystem
         Subs.CVar(_cfg, CCVars.EventMusicEnabled, ToggleStationEventMusic, true);
 
         Subs.CVar(_cfg, CCVars.AndyAnnouncementsEnabled, ToggleAndyAnnouncements, true);
-        Subs.CVar(_cfg, CCVars.AndyAnnouncementsDebug, ToggleAndyDebug, true);
 
         SubscribeNetworkEvent<GameGlobalSoundEvent>(PlayGameSound);
     }
@@ -102,19 +97,11 @@ public sealed class ClientGlobalSoundSystem : SharedGlobalSoundSystem
 
     private void PlayGameSound(GameGlobalSoundEvent soundEvent)
     {
-        if (_andyDebug)
-            Sawmill.Info($"[ClientGlobalSoundSystem] Incoming global sound: {DescribeSpecifier(soundEvent.Specifier)}");
-
         if (IsAndyAnnouncement(soundEvent.Specifier))
         {
-            if (_andyDebug)
-                Sawmill.Info($"[ClientGlobalSoundSystem] Matched Andy sound. enabled={_andyAudioEnabled}");
-
             if (!_andyAudioEnabled)
             {
                 _audio.PlayGlobal(AndyAnnouncementFallback, Filter.Local(), false, soundEvent.AudioParams);
-                if (_andyDebug)
-                    Sawmill.Info($"[ClientGlobalSoundSystem] Replaced with fallback: {AndyAnnouncementFallback.Path}");
                 return;
             }
 
@@ -160,8 +147,6 @@ public sealed class ClientGlobalSoundSystem : SharedGlobalSoundSystem
     private void ToggleAndyAnnouncements(bool enabled)
     {
         _andyAudioEnabled = enabled;
-        if (_andyDebug)
-            Sawmill.Info($"[ClientGlobalSoundSystem] Andy toggle changed: enabled={enabled}");
 
         if (_andyAudioEnabled)
             return;
@@ -172,13 +157,6 @@ public sealed class ClientGlobalSoundSystem : SharedGlobalSoundSystem
         }
 
         _andyAudio.Clear();
-    }
-
-    private void ToggleAndyDebug(bool enabled)
-    {
-        _andyDebug = enabled;
-        if (_andyDebug)
-            Sawmill.Info("[ClientGlobalSoundSystem] Debug tracing enabled");
     }
 
     private static bool IsAndyAnnouncement(ResolvedSoundSpecifier specifier)
@@ -211,13 +189,4 @@ public sealed class ClientGlobalSoundSystem : SharedGlobalSoundSystem
                && normalized.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static string DescribeSpecifier(ResolvedSoundSpecifier specifier)
-    {
-        return specifier switch
-        {
-            ResolvedPathSpecifier path => path.Path.ToString(),
-            ResolvedCollectionSpecifier collection => $"Collection={collection.Collection} Index={collection.Index}",
-            _ => specifier.ToString() ?? "<unknown>",
-        };
-    }
 }

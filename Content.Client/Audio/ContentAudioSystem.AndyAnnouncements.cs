@@ -3,15 +3,12 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
-using Robust.Shared.Log;
 using Robust.Shared.Player;
 
 namespace Content.Client.Audio;
 
 public sealed partial class ContentAudioSystem
 {
-    private static readonly ISawmill Sawmill = Logger.GetSawmill("andy.audio");
-
     private const string PocketSizedAndyFolderSegment = "/PocketSizedAndy/";
     private const string AndyAnnouncementFallbackPath = "/Audio/Announcements/announce.ogg";
     private const float AndyAnnouncementMaxVolume = 0f;
@@ -25,7 +22,6 @@ public sealed partial class ContentAudioSystem
     private readonly HashSet<EntityUid> _andyAnnouncementFallbackPlayed = new();
     private readonly HashSet<EntityUid> _andyAnnouncementDisabledHandled = new();
     private bool _andyAnnouncementsInitialized;
-    private bool _andyAnnouncementsDebug;
 
     private void InitializeAndyAnnouncements()
     {
@@ -39,14 +35,10 @@ public sealed partial class ContentAudioSystem
         var currentVolume = _configManager.GetCVar(CCVars.AndyAnnouncementVolume);
         _andyAnnouncementsMuted = currentVolume <= AndyAnnouncementMuteThreshold;
         _andyAnnouncementVolume = SharedAudioSystem.GainToVolume(currentVolume);
-        _andyAnnouncementsDebug = _configManager.GetCVar(CCVars.AndyAnnouncementsDebug);
 
         Subs.CVar(_configManager, CCVars.AndyAnnouncementsEnabled, AndyAnnouncementEnabledChanged, true);
         Subs.CVar(_configManager, CCVars.AndyAnnouncementVolume, AndyAnnouncementVolumeChanged, true);
-        Subs.CVar(_configManager, CCVars.AndyAnnouncementsDebug, AndyAnnouncementDebugChanged, true);
         TrySubscribeAndyAudioEvents();
-
-        DebugAndy($"Initialized: enabled={_andyAnnouncementsEnabled}, muted={_andyAnnouncementsMuted}, volume={_andyAnnouncementVolume:0.###}");
     }
 
     private void TrySubscribeAndyAudioEvents()
@@ -65,9 +57,6 @@ public sealed partial class ContentAudioSystem
 
     private void OnAudioStartup(EntityUid uid, AudioComponent component, ComponentStartup args)
     {
-        if (_andyAnnouncementsDebug && ShouldTraceFileName(component.FileName))
-            DebugAndy($"Audio startup uid={uid} file={component.FileName}");
-
         // Apply toggle/volume immediately so short one-shot announcements can't slip through.
         UpdateAndyAnnouncementVolume(uid, component);
     }
@@ -96,15 +85,8 @@ public sealed partial class ContentAudioSystem
     {
         _andyAnnouncementsMuted = volume <= AndyAnnouncementMuteThreshold;
         _andyAnnouncementVolume = SharedAudioSystem.GainToVolume(volume);
-        DebugAndy($"Volume cvar changed: gain={volume:0.###}, muted={_andyAnnouncementsMuted}, db={_andyAnnouncementVolume:0.###}");
 
         UpdateAndyAnnouncementVolumes();
-    }
-
-    private void AndyAnnouncementDebugChanged(bool enabled)
-    {
-        _andyAnnouncementsDebug = enabled;
-        DebugAndy($"Debug tracing {(enabled ? "enabled" : "disabled")}");
     }
 
     private void UpdateAndyAnnouncementVolumes()
@@ -134,31 +116,23 @@ public sealed partial class ContentAudioSystem
         if (!_andyAnnouncementsEnabled && _andyAnnouncementDisabledHandled.Contains(uid))
             return;
 
-        if (_andyAnnouncementsDebug && (isAndy || ShouldTraceFileName(component.FileName)))
-        {
-            DebugAndy($"Evaluate uid={uid} file={component.FileName} isAndy={isAndy} enabled={_andyAnnouncementsEnabled} muted={_andyAnnouncementsMuted} playing={component.Playing}");
-        }
-
         if (!_andyAnnouncementsEnabled)
         {
             _andyAnnouncementDisabledHandled.Add(uid);
 
             if (_andyAnnouncementFallbackPlayed.Add(uid))
             {
-                DebugAndy($"Replacing Andy clip with fallback uid={uid} fallback={AndyAnnouncementFallbackPath}");
                 _audio.PlayGlobal(new ResolvedPathSpecifier(AndyAnnouncementFallbackPath), Filter.Local(), false, component.Params);
             }
 
             // Stop the original Andy clip so only the replacement announcement is heard.
             _audio.Stop(uid, component);
-            DebugAndy($"Stopped Andy clip due to disabled toggle uid={uid}");
             return;
         }
 
         if (_andyAnnouncementsMuted)
         {
             _audio.Stop(uid, component);
-            DebugAndy($"Stopped Andy clip due to muted slider uid={uid}");
             return;
         }
 
@@ -174,25 +148,6 @@ public sealed partial class ContentAudioSystem
             return;
 
         _audio.SetVolume(uid, expected, component);
-        DebugAndy($"Adjusted Andy volume uid={uid} expected={expected:0.###}");
-    }
-
-    private void DebugAndy(string message)
-    {
-        if (!_andyAnnouncementsDebug)
-            return;
-
-        Sawmill.Info($"[ContentAudioSystem] {message}");
-    }
-
-    private static bool ShouldTraceFileName(string fileName)
-    {
-        if (string.IsNullOrWhiteSpace(fileName))
-            return false;
-
-        return fileName.Contains("andy", StringComparison.OrdinalIgnoreCase)
-               || fileName.Contains("announce", StringComparison.OrdinalIgnoreCase)
-               || fileName.Contains("PocketSizedAndy", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsAndyAnnouncement(string fileName)
