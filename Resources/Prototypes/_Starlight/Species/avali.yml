@@ -12,20 +12,19 @@
   femaleFirstNames: names_avali_first
   lastNames: names_avali_packs
   naming: FirstLast
-  # CS: Remove Min-age
+  minAge: 23
   youngAge: 103
   oldAge: 257
-  maxAge: 430
-  minHeight: 0.8
-  defaultHeight: 0.91
-  maxHeight: 1
-  sexes:
-    - Unsexed
-    - Male
-    - Female
-  kind:
-  - RaptorLike
-  # CS: CustomName cause error
+  # CS: Small enough to fit in a bag
+  minHeight: 0.6
+  defaultHeight: 0.8
+  maxHeight: 1.1
+  minWidth: 0.55
+  defaultWidth: 0.8
+  maxWidth: 1.15
+  # End CS
+  # CS: Can't use customeName
+
 - type: speciesBaseSprites
   id: MobAvaliSprites
   sprites:
@@ -45,6 +44,16 @@
     RLeg: MobAvaliRLeg
     LFoot: MobAvaliLFoot
     RFoot: MobAvaliRFoot
+    # CS Start
+    Special: MobHumanoidAnyMarking
+    TailBehind: MobHumanoidAnyMarking
+    TailOversuit: MobHumanoidAnyMarking
+    Hair: MobHumanoidAnyMarking
+    FacialHair: MobHumanoidAnyMarking
+    Snout: MobHumanoidAnyMarking
+    Genital: MobHumanoidAnyMarking
+    RArmExtension: MobHumanoidAnyMarking # Adds Wing Slot, this will look weird as fuck
+    # End CS
 
 - type: humanoidBaseSprite
   id: MobAvaliEyes
@@ -54,43 +63,58 @@
 
 - type: markingPoints
   id: MobAvaliMarkingLimits
-  # CS: Allow all markings
   points:
+    # CS Start
+    Special:
+      points: 32
+      required: false
+    Head:
+      points: 32
+      required: false
+    # End CS
     Hair:
-      points: 1
+      points: 32 # CS
       required: false
     FacialHair:
-      points: 0
+      points: 32 # CS
       required: false
     Tail:
-      points: 1
+      points: 32 # CS
       required: true
       defaultMarkings: [ AvaliTailBase ]
     Snout:
-      points: 1
+      points: 32 # CS
       required: false
     HeadTop:
-      points: 1
+      points: 32 # CS
       required: false
     HeadSide:
-      points: 1
+      points: 32 # CS
       required: true
       defaultMarkings: [ AvaliEarsBase ]
     Chest:
-      points: 1
+      points: 32 # CS
       required: false
     Legs:
-      points: 2
+      points: 32 # CS
       required: false
     UndergarmentTop:
-      points: 1
+      points: 32 # CS
       required: false
     UndergarmentBottom:
-      points: 1
+      points: 32 # CS
       required: false
     Arms:
-      points: 4
+      points: 32 # CS
       required: false
+    # CS Start
+    Genital:
+      points: 32
+      required: false
+    Overlay:
+      points: 32
+      required: false
+    # End CS
 
 - type: humanoidBaseSprite
   id: MobAvaliHead
