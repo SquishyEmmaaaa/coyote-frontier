@@ -649,9 +649,20 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
             var color = colorDict.TryGetValue(rsi.RsiState, out var targetColor) ? targetColor : Color.White;
             var glowFactor = glowDict.TryGetValue(rsi.RsiState, out var targetGlow) ? targetGlow : 0f;
 
-            sprite.LayerSetColor(layerId, color.WithAlpha(color.A * (1f - glowFactor)));
+            var clampedGlow = Math.Clamp(glowFactor, 0f, 1f);
+            var baseAlpha = color.A;
+            var glowAlpha = baseAlpha * clampedGlow;
 
-            if (glowFactor > 0f)
+            // Keep the final composed alpha stable while splitting between base + glow layers.
+            // With standard alpha compositing: total = base + glow * (1 - base).
+            // Solve for base so total remains equal to the original alpha.
+            var denom = 1f - glowAlpha;
+            var baseLayerAlpha = denom > 0f ? (baseAlpha - glowAlpha) / denom : 0f;
+            baseLayerAlpha = Math.Clamp(baseLayerAlpha, 0f, 1f);
+
+            sprite.LayerSetColor(layerId, color.WithAlpha(baseLayerAlpha));
+
+            if (clampedGlow > 0f)
             {
                 if (!sprite.LayerMapTryGet(glowLayerId, out _))
                 {
@@ -662,7 +673,7 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
 
                 sprite.LayerSetShader(glowLayerId, "unshaded");
                 sprite.LayerSetVisible(glowLayerId, visible);
-                sprite.LayerSetColor(glowLayerId, color.WithAlpha(color.A * glowFactor));
+                sprite.LayerSetColor(glowLayerId, color.WithAlpha(glowAlpha));
                 humanoid.ClientElderMarkings.Add(glowLayerId);
             }
             else if (sprite.LayerMapTryGet(glowLayerId, out var glowIndex))
