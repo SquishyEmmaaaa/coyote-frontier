@@ -2684,3 +2684,10 @@ Entries:
   id: 308
   time: '2026-05-01T03:44:36.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1185
+- author: Khaomi
+  changes:
+    - type: Fix
+      message: Fixed Avali and Resomi not having hunger and thrist
+  id: 309
+  time: '2026-05-01T05:18:14.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1183
