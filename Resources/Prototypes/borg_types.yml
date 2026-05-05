@@ -525,3 +525,93 @@
   # Pet
   petSuccessString: petting-success-service-cyborg
   petFailureString: petting-failure-service-cyborg
+
+
+# Strayd dogborg (salvage profile)
+- type: borgType
+  id: strayd
+
+  # Description
+  dummyPrototype: DogBorgChassisStrayd
+
+  # Functional
+  extraModuleCount: 3
+  moduleWhitelist:
+    tags:
+    - BorgModuleGeneric
+    - BorgModuleCargo
+
+  defaultModules:
+  - BorgModuleTool
+  - BorgModuleMining
+  - BorgModuleTraversal
+  - BorgModuleAppraisal
+  - BorgModuleJetpack # Frontier
+
+  radioChannels:
+  - Supply
+  - Science
+
+  # Visual
+  spriteRsiPath: _CS/Mob/Silicons/dog_vale.rsi
+  inventoryTemplateId: borgTall
+  spriteBodyState: strayd-sit
+  spriteBodyMovementState: strayd_moving
+  spriteBodyRestState: strayd-rest
+  spriteBodyLyingState: strayd-bellyup
+  spriteBodyDeadState: strayd-dead
+  spriteHasMindState: strayd_e
+  spriteHasMindMovementState: strayd_e_moving
+  spriteNoMindState: strayd_e_r
+  spriteNoMindMovementState: strayd_e_r_moving
+  spriteToggleLightState: strayd_l
+  spriteToggleLightMovementState: strayd_l_moving
+
+  # Pet
+  petSuccessString: petting-success-salvage-cyborg
+  petFailureString: petting-failure-salvage-cyborg
+
+
+# Syndicate dogborg skin (salvage profile)
+- type: borgType
+  id: syndicated
+
+  # Description
+  dummyPrototype: DogBorgChassisSyndicated
+
+  # Functional
+  extraModuleCount: 3
+  moduleWhitelist:
+    tags:
+    - BorgModuleGeneric
+    - BorgModuleCargo
+
+  defaultModules:
+  - BorgModuleTool
+  - BorgModuleMining
+  - BorgModuleTraversal
+  - BorgModuleAppraisal
+  - BorgModuleJetpack # Frontier
+
+  radioChannels:
+  - Supply
+  - Science
+
+  # Visual
+  spriteRsiPath: _CS/Mob/Silicons/dog_vale.rsi
+  inventoryTemplateId: borgTall
+  spriteBodyState: syndicated-sit
+  spriteBodyMovementState: syndicated_moving
+  spriteBodyRestState: syndicated-rest
+  spriteBodyLyingState: syndicated-bellyup
+  spriteBodyDeadState: syndicated-dead
+  spriteHasMindState: syndicated_e
+  spriteHasMindMovementState: syndicated_e_moving
+  spriteNoMindState: syndicated_e_r
+  spriteNoMindMovementState: syndicated_e_r_moving
+  spriteToggleLightState: syndicated_l
+  spriteToggleLightMovementState: syndicated_l_moving
+
+  # Pet
+  petSuccessString: petting-success-salvage-cyborg
+  petFailureString: petting-failure-salvage-cyborg

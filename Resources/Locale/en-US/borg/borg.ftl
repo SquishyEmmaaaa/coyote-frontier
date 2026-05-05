@@ -85,4 +85,12 @@ borg-type-serviced-name = Service (Dog)
 borg-type-serviced-desc = A dog-form service chassis for botany, food service, and entertainment tasks.
 borg-type-serviced-transponder = service dogborg
 
+borg-type-strayd-name = Strayd (Dog)
+borg-type-strayd-desc = A dog-form salvage chassis using the Strayd appearance and salvage module set.
+borg-type-strayd-transponder = strayd dogborg
+
+borg-type-syndicated-name = Syndicate (Dog)
+borg-type-syndicated-desc = A dog-form salvage chassis using the Syndicate appearance and salvage module set.
+borg-type-syndicated-transponder = syndicated dogborg
+
 

@@ -210,6 +210,48 @@
       visible: false
 
 - type: entity
+  id: DogBorgChassisStrayd
+  parent: DogBorgChassisSelectable
+  name: strayd dogborg
+  components:
+  - type: BorgSwitchableType
+    selectedBorgType: strayd
+  - type: Sprite
+    sprite: _CS/Mob/Silicons/dog_vale.rsi
+    layers:
+    - state: strayd
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: strayd_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: strayd_l
+      shader: unshaded
+      map: ["light", "enum.BorgVisualLayers.LightStatus"]
+      visible: false
+
+- type: entity
+  id: DogBorgChassisSyndicated
+  parent: DogBorgChassisSelectable
+  name: syndicated dogborg
+  components:
+  - type: BorgSwitchableType
+    selectedBorgType: syndicated
+  - type: Sprite
+    sprite: _CS/Mob/Silicons/dog_vale.rsi
+    layers:
+    - state: syndicated
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: syndicated_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: syndicated_l
+      shader: unshaded
+      map: ["light", "enum.BorgVisualLayers.LightStatus"]
+      visible: false
+
+- type: entity
   id: BorgChassisJanitor
   parent: BorgChassisSelectable
   name: janitor cyborg
