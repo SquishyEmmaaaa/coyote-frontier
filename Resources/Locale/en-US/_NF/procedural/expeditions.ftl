@@ -1,5 +1,5 @@
 salvage-expedition-window-finish = Finish expedition
-salvage-expedition-announcement-early-finish = The expedition was completed ahead of schedule. Shuttle will depart in {$departTime} seconds.
+salvage-expedition-announcement-early-finish = The expedition was completed ahead of schedule.
 salvage-expedition-announcement-destruction = { $count ->
     [1] Destroy the {$structure} before the expedition ends.
     *[others] Destroy {$count} {MAKEPLURAL($structure)} before the expedition ends.
@@ -11,11 +11,13 @@ salvage-expedition-announcement-elimination = { $count ->
 salvage-expedition-announcement-destruction-entity-fallback = structure
 salvage-expedition-announcement-elimination-entity-fallback = target
 
-salvage-expedition-abort-wipe = [color=Red]Oh dear, everyone's dead.[/color] Aborting mission and recovering the bodies! Shuttle will depart in {$departTime} seconds.
+salvage-expedition-abort-wipe = [color=Red]Oh dear, everyone's dead.[/color] Aborting mission and recovering the bodies!
+salvage-expedition-announcement-shuttle-leave-seconds = Shuttle will leave in {$departTime} seconds.
 
 salvage-expedition-shuttle-not-found = Cannot locate shuttle.
 salvage-expedition-not-everyone-aboard = Not all crew aboard! {CAPITALIZE(THE($target))} is still out there!
 salvage-expedition-failed = Expedition is failed.
+salvage-expedition-no-valid-landing-zone = No valid landing zone found.
 
 # Salvage mods
 salvage-time-mod-standard-time = Normal Duration

@@ -14,9 +14,9 @@ using Content.Shared.Shuttles.Components;
 using Content.Shared.Localizations;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
-using Robust.Shared.Map; // Frontier
-using Content.Server.GameTicking; // Frontier
-using Content.Server._NF.Salvage.Expeditions.Structure; // Frontier
+using Robust.Shared.Map; // _CS
+using Content.Server.GameTicking; // _CS
+using Content.Server._NF.Salvage.Expeditions.Structure; // _CS
 using Content.Server._NF.Salvage.Expeditions;
 using Content.Server.Body.Components;
 using Content.Server.Buckle.Systems;
@@ -36,7 +36,7 @@ using Content.Shared.Warps;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
-using Robust.Shared.Enums; // Frontier
+using Robust.Shared.Enums; // _CS
 
 namespace Content.Server.Salvage;
 
@@ -47,12 +47,16 @@ public sealed partial class SalvageSystem
      */
 
     [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly GameTicker _gameTicker = default!; // Frontier
+    [Dependency] private readonly GameTicker _gameTicker = default!; // _CS
     [Dependency] private readonly BuckleSystem _buckle = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly TemperatureSystem _temperature = default!;
-    private readonly Dictionary<EntityUid, TimeSpan> _pausedExpeditionRemaining = new();
+
+    private static readonly TimeSpan StandardShipExpeditionDuration = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan SharedShipExpeditionDuration = TimeSpan.FromMinutes(20);
+    private readonly Dictionary<EntityUid, TimeSpan> _pausedShuttleExpeditionRemaining = new();
+    private readonly Dictionary<EntityUid, TimeSpan> _previousNaturalAnnouncementRemaining = new();
 
     private void InitializeRunner()
     {
@@ -111,6 +115,34 @@ public sealed partial class SalvageSystem
             null);
     }
 
+    /// <summary>
+    /// Announces a message only to players currently aboard a specific shuttle grid.
+    /// Used for per-ship briefings when joining an already-running shared expedition.
+    /// </summary>
+    private void AnnounceToGrid(EntityUid gridUid, string text) // Frontier
+    {
+        var filter = Filter.Empty();
+        foreach (var session in _players.Sessions)
+        {
+            if (!session.AttachedEntity.HasValue)
+                continue;
+
+            if (Transform(session.AttachedEntity.Value).GridUid == gridUid)
+                filter.AddPlayer(session);
+        }
+
+        _chat.ChatMessageToManyFiltered(
+            filter,
+            ChatChannel.Radio,
+            text,
+            text,
+            gridUid,
+            false,
+            true,
+            null);
+    }
+    // End Frontier
+
     private void OnFTLRequest(ref FTLRequestEvent ev)
     {
         if (!HasComp<SalvageExpeditionComponent>(ev.MapUid) ||
@@ -129,31 +161,56 @@ public sealed partial class SalvageSystem
         if (!TryComp<SalvageExpeditionComponent>(args.MapUid, out var component))
             return;
 
-        // Someone FTLd there so start announcement
-        if (component.Stage != ExpeditionStage.Added)
-            return;
+        if (!component.ShuttleEndTimes.ContainsKey(args.Entity))
+            component.ShuttleEndTimes[args.Entity] = _timing.CurTime + GetDefaultShipExpeditionDuration(component);
 
-        // Frontier: early finish
-        if (TryComp<SalvageExpeditionDataComponent>(component.Station, out var data))
+        TrackSharedArrivalShuttles(args.Entity, args.MapUid, component);
+
+        var station = _station.GetOwningStation(args.Entity);
+        if (station is { Valid: true } stationUid && TryComp<SalvageExpeditionDataComponent>(stationUid, out var stationData))
         {
-            data.CanFinish = true;
-            UpdateConsoles((component.Station, data));
+            stationData.CanFinish = true;
+            UpdateStationConsoles(stationUid);
         }
-        // End Frontier: early finish
 
-        var arrivalRemaining = component.EndTime - _timing.CurTime;
-        var arrivalMinutes = GetDisplayedRemainingMinutes(arrivalRemaining);
-        Announce(args.MapUid, Loc.GetString("salvage-expedition-announcement-countdown-minutes", ("duration", arrivalMinutes)));
+        var isFirstArrival = component.Stage == ExpeditionStage.Added;
 
-        // list all the ssd goobers on the expedition
-        UpdateSsdGoobers(args.MapUid, component);
+        // Map-wide countdown and SSD scan only on first arrival.
+        if (isFirstArrival)
+        {
+            var arrivalRemaining = component.EndTime - _timing.CurTime;
+            var arrivalMinutes = GetDisplayedRemainingMinutes(arrivalRemaining);
+            Announce(args.MapUid, Loc.GetString("salvage-expedition-announcement-countdown-minutes", ("duration", arrivalMinutes)));
+            UpdateSsdGoobers(args.MapUid, component);
+        }
 
-        var directionLocalization = ContentLocalizationManager.FormatDirection(component.DungeonLocation.GetDir()).ToLower();
-
+        // Frontier: dungeon direction is sent to each arriving shuttle individually so every ship
+        // that joins a shared expedition receives it, not only the first one.
         if (component.DungeonLocation != Vector2.Zero)
-            Announce(args.MapUid, Loc.GetString("salvage-expedition-announcement-dungeon", ("direction", directionLocalization)));
+        {
+            var directionLocalization = ContentLocalizationManager.FormatDirection(component.DungeonLocation.GetDir()).ToLower();
+            var shipRemaining = component.ShuttleEndTimes.TryGetValue(args.Entity, out var shipEndTime)
+                ? shipEndTime - _timing.CurTime
+                : component.EndTime - _timing.CurTime;
 
-        // Frontier: type-specific announcement
+            if (shipRemaining < TimeSpan.Zero)
+                shipRemaining = TimeSpan.Zero;
+
+            var shipMinutes = GetDisplayedRemainingMinutes(shipRemaining);
+            var dirMsg = Loc.GetString("salvage-expedition-announcement-dungeon", ("direction", directionLocalization));
+            var remainingMsg = Loc.GetString("salvage-expedition-announcement-countdown-minutes", ("duration", shipMinutes));
+
+            if (isFirstArrival)
+                Announce(args.MapUid, dirMsg);
+            else
+            {
+                AnnounceToGrid(args.Entity, dirMsg);
+                AnnounceToGrid(args.Entity, remainingMsg);
+            }
+        }
+
+        // _CS: type-specific announcement — also per-ship for shared expeditions so late arrivals are briefed.
+        string? missionMsg = null;
         switch (component.MissionParams.MissionType)
         {
             case SalvageMissionType.Destruction:
@@ -166,7 +223,7 @@ public sealed partial class SalvageSystem
                     if (string.IsNullOrWhiteSpace(name))
                         name = Loc.GetString("salvage-expedition-announcement-destruction-entity-fallback");
                     // Assuming all structures are of the same type.
-                    Announce(args.MapUid, Loc.GetString("salvage-expedition-announcement-destruction", ("structure", name), ("count", destruction.Structures.Count)));
+                    missionMsg = Loc.GetString("salvage-expedition-announcement-destruction", ("structure", name), ("count", destruction.Structures.Count));
                 }
                 break;
             case SalvageMissionType.Elimination:
@@ -179,27 +236,44 @@ public sealed partial class SalvageSystem
                     if (string.IsNullOrWhiteSpace(name))
                         name = Loc.GetString("salvage-expedition-announcement-elimination-entity-fallback");
                     // Assuming all megafauna are of the same type.
-                    Announce(args.MapUid, Loc.GetString("salvage-expedition-announcement-elimination", ("target", name), ("count", elimination.Megafauna.Count)));
+                    missionMsg = Loc.GetString("salvage-expedition-announcement-elimination", ("target", name), ("count", elimination.Megafauna.Count));
                 }
                 break;
-            default:
-                break; // No announcement
         }
-        // End Frontier
+        if (missionMsg != null)
+        {
+            if (isFirstArrival)
+                Announce(args.MapUid, missionMsg);
+            else
+                AnnounceToGrid(args.Entity, missionMsg);
+        }
+        // _CS End
 
-        component.Stage = ExpeditionStage.Running;
-        Dirty(args.MapUid, component);
+        if (isFirstArrival)
+        {
+            component.Stage = ExpeditionStage.Running;
+            Dirty(args.MapUid, component);
+            InitExpeditionWeather(args.MapUid, component);
+        }
     }
 
     private void OnFTLStarted(ref FTLStartedEvent ev)
     {
-        if (!TryComp<SalvageExpeditionComponent>(ev.FromMapUid, out var expedition) ||
-            !TryComp<SalvageExpeditionDataComponent>(expedition.Station, out var station))
+        if (!TryComp<SalvageExpeditionComponent>(ev.FromMapUid, out var expedition))
         {
             return;
         }
 
-        station.CanFinish = false; // Frontier
+        expedition.ShuttleEndTimes.Remove(ev.Entity);
+        expedition.ForcedDepartureShuttles.Remove(ev.Entity);
+        _pausedShuttleExpeditionRemaining.Remove(ev.Entity);
+
+        var stationUid = _station.GetOwningStation(ev.Entity);
+        if (stationUid is { Valid: true } participantStation && TryComp<SalvageExpeditionDataComponent>(participantStation, out var station))
+        {
+            station.CanFinish = false;
+            UpdateStationConsoles(participantStation);
+        }
 
         // Check if any shuttles remain.
         var query = EntityQueryEnumerator<ShuttleComponent, TransformComponent>();
@@ -223,203 +297,176 @@ public sealed partial class SalvageSystem
         // Run the basic mission timers (e.g. announcements, auto-FTL, completion, etc)
         while (query.MoveNext(out var uid, out var comp))
         {
-            // If this expedition was just created, stale pause-cache from a recycled entity UID must not apply.
+            var now = _timing.CurTime;
+            var dirty = false;
+
+            // For shared expeditions, keep body-recovery ownership aligned with the last shuttle grid occupied.
+            UpdateSharedShuttleAssociations(uid, comp);
+
+            // If this expedition was just created, stale shuttle pause-cache from a recycled map UID must not apply.
             if (comp.Stage == ExpeditionStage.Added)
-                _pausedExpeditionRemaining.Remove(uid);
+                ClearPausedShuttleCacheForMap(uid);
 
-            var remaining = comp.EndTime - _timing.CurTime;
-            if (remaining < TimeSpan.Zero)
-                remaining = TimeSpan.Zero;
+            AbortIfWiped(uid, comp); // _CS
 
-            // Frontier: pause countdown only when an expedition-extending anchor is actively powered on a shuttle grid on this map.
-            var expeditionExtended = false;
-            var anchorQuery = EntityQueryEnumerator<StationAnchorComponent, TransformComponent, PowerChargeComponent>();
-            while (anchorQuery.MoveNext(out _, out var anchor, out var anchorXform, out var anchorPower))
+            var nearestRemaining = TimeSpan.MaxValue;
+            var nearestAnnouncementRemaining = TimeSpan.MaxValue;
+            var hasNaturalAnnouncementTimer = false;
+            var latestEnd = now;
+            var activeShuttles = new HashSet<EntityUid>();
+
+            var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
+            while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var shuttleXform))
             {
-                if (!anchor.ExtendDuration)
+                if (shuttleXform.MapUid != uid)
                     continue;
 
-                if (!anchor.SwitchedOn || !anchorPower.Active)
-                    continue;
+                activeShuttles.Add(shuttleUid);
 
-                if (anchorXform.MapUid != uid || !anchorXform.GridUid.HasValue)
-                    continue;
-
-                if (!HasComp<ShuttleComponent>(anchorXform.GridUid.Value))
-                    continue;
-
-                expeditionExtended = true;
-                break;
-            }
-
-            if (expeditionExtended)
-            {
-                if (!_pausedExpeditionRemaining.TryGetValue(uid, out var pausedRemaining))
+                if (!comp.ShuttleEndTimes.TryGetValue(shuttleUid, out var shuttleEnd))
                 {
-                    pausedRemaining = remaining;
-                    _pausedExpeditionRemaining[uid] = pausedRemaining;
+                    shuttleEnd = now + GetDefaultShipExpeditionDuration(comp);
+                    comp.ShuttleEndTimes[shuttleUid] = shuttleEnd;
+                    dirty = true;
                 }
 
-                // Keep pushing EndTime forward while preserving the exact frozen remaining time.
-                comp.EndTime = _timing.CurTime + pausedRemaining;
+                var shuttleRemaining = shuttleEnd - now;
+                if (shuttleRemaining < TimeSpan.Zero)
+                    shuttleRemaining = TimeSpan.Zero;
+
+                // Pause only this shuttle's timer when an expedition-extending anchor is active on this shuttle.
+                if (IsShuttleAnchorExtending(uid, shuttleUid))
+                {
+                    if (!_pausedShuttleExpeditionRemaining.TryGetValue(shuttleUid, out var pausedRemaining))
+                    {
+                        pausedRemaining = shuttleRemaining;
+                        _pausedShuttleExpeditionRemaining[shuttleUid] = pausedRemaining;
+                    }
+
+                    var pausedEnd = now + pausedRemaining;
+                    if (pausedEnd != shuttleEnd)
+                    {
+                        shuttleEnd = pausedEnd;
+                        comp.ShuttleEndTimes[shuttleUid] = shuttleEnd;
+                        dirty = true;
+                    }
+                }
+                else if (_pausedShuttleExpeditionRemaining.Remove(shuttleUid, out var resumeRemaining))
+                {
+                    var resumedEnd = now + resumeRemaining;
+                    if (resumedEnd != shuttleEnd)
+                    {
+                        shuttleEnd = resumedEnd;
+                        comp.ShuttleEndTimes[shuttleUid] = shuttleEnd;
+                        dirty = true;
+                    }
+                }
+
+                shuttleRemaining = shuttleEnd - now;
+                if (shuttleRemaining < TimeSpan.Zero)
+                    shuttleRemaining = TimeSpan.Zero;
+
+                if (shuttleRemaining < nearestRemaining)
+                    nearestRemaining = shuttleRemaining;
+
+                if (!comp.ForcedDepartureShuttles.Contains(shuttleUid))
+                {
+                    hasNaturalAnnouncementTimer = true;
+                    if (shuttleRemaining < nearestAnnouncementRemaining)
+                        nearestAnnouncementRemaining = shuttleRemaining;
+                }
+
+                if (shuttleEnd > latestEnd)
+                    latestEnd = shuttleEnd;
+
+                if (HasComp<FTLComponent>(shuttleUid))
+                    continue;
+
+                if (shuttleRemaining < TimeSpan.FromSeconds(_shuttle.DefaultStartupTime) + TimeSpan.FromSeconds(0.5))
+                    TryAutoReturnShuttle(uid, comp, shuttleUid, shuttle, shuttleXform, shuttleRemaining);
+            }
+
+            foreach (var trackedShuttle in comp.ShuttleEndTimes.Keys.ToArray())
+            {
+                if (activeShuttles.Contains(trackedShuttle))
+                    continue;
+
+                comp.ShuttleEndTimes.Remove(trackedShuttle);
+                comp.ForcedDepartureShuttles.Remove(trackedShuttle);
+                _pausedShuttleExpeditionRemaining.Remove(trackedShuttle);
+                dirty = true;
+            }
+
+            if (activeShuttles.Count == 0)
+            {
+                QueueDel(uid);
                 continue;
             }
 
-            if (_pausedExpeditionRemaining.Remove(uid, out var resumeRemaining))
+            if (comp.EndTime != latestEnd)
             {
-                comp.EndTime = _timing.CurTime + resumeRemaining;
-                remaining = resumeRemaining;
+                comp.EndTime = latestEnd;
+                dirty = true;
             }
-            // End Frontier: expedition duration extension
+
+            if (nearestRemaining == TimeSpan.MaxValue)
+                nearestRemaining = comp.EndTime - now;
+
+            if (nearestRemaining < TimeSpan.Zero)
+                nearestRemaining = TimeSpan.Zero;
+
+            // Countdown announcements should be driven by naturally expiring shuttles only.
+            // Forced-departure shuttles (early finish / abort) should not trigger global countdown warnings.
+            if (hasNaturalAnnouncementTimer && nearestAnnouncementRemaining < TimeSpan.Zero)
+                nearestAnnouncementRemaining = TimeSpan.Zero;
+
+            // Only announce when crossing thresholds naturally, not just because we happen to already be below them.
+            var previousNaturalAnnouncementRemaining = nearestAnnouncementRemaining;
+            if (hasNaturalAnnouncementTimer)
+            {
+                if (!_previousNaturalAnnouncementRemaining.TryGetValue(uid, out previousNaturalAnnouncementRemaining))
+                    previousNaturalAnnouncementRemaining = nearestAnnouncementRemaining;
+
+                _previousNaturalAnnouncementRemaining[uid] = nearestAnnouncementRemaining;
+            }
+            else
+            {
+                _previousNaturalAnnouncementRemaining.Remove(uid);
+            }
 
             var audioLength = _audio.GetAudioLength(comp.SelectedSong);
 
-            AbortIfWiped(uid, comp); // Frontier
-
-            if (comp.Stage < ExpeditionStage.FinalCountdown && remaining < TimeSpan.FromSeconds(45))
+            if (hasNaturalAnnouncementTimer)
             {
-                comp.Stage = ExpeditionStage.FinalCountdown;
-                Dirty(uid, comp);
-                Announce(uid, Loc.GetString("salvage-expedition-announcement-countdown-seconds", ("duration", TimeSpan.FromSeconds(45).Seconds)));
-            }
-            else if (comp.Stage < ExpeditionStage.MusicCountdown && remaining < audioLength) // Frontier
-            {
-                // Frontier: handled client-side.
-                // var audio = _audio.PlayPvs(comp.Sound, uid);
-                // comp.Stream = audio?.Entity;
-                // _audio.SetMapAudio(audio);
-                // End Frontier
-                comp.Stage = ExpeditionStage.MusicCountdown;
-                Dirty(uid, comp);
-                var musicMinutes = GetDisplayedRemainingMinutes(remaining);
-                Announce(uid, Loc.GetString("salvage-expedition-announcement-countdown-minutes", ("duration", musicMinutes)));
-            }
-            else if (comp.Stage < ExpeditionStage.Countdown && remaining < TimeSpan.FromMinutes(5)) // Frontier: 4<5
-            {
-                comp.Stage = ExpeditionStage.Countdown;
-                Dirty(uid, comp);
-                var countdownMinutes = GetDisplayedRemainingMinutes(remaining);
-                Announce(uid, Loc.GetString("salvage-expedition-announcement-countdown-minutes", ("duration", countdownMinutes)));
-            }
-            // Auto-FTL out any shuttles
-            else if (remaining < TimeSpan.FromSeconds(_shuttle.DefaultStartupTime) + TimeSpan.FromSeconds(0.5))
-            {
-                var ftlTime = (float)remaining.TotalSeconds;
-
-                if (remaining < TimeSpan.FromSeconds(_shuttle.DefaultStartupTime))
+                if (comp.Stage < ExpeditionStage.FinalCountdown &&
+                    previousNaturalAnnouncementRemaining > TimeSpan.FromSeconds(45) &&
+                    nearestAnnouncementRemaining <= TimeSpan.FromSeconds(45))
                 {
-                    ftlTime = MathF.Max(0, (float)remaining.TotalSeconds - 0.5f);
+                    comp.Stage = ExpeditionStage.FinalCountdown;
+                    dirty = true;
+                    Announce(uid, Loc.GetString("salvage-expedition-announcement-countdown-seconds", ("duration", TimeSpan.FromSeconds(45).Seconds)));
                 }
-
-                ftlTime = MathF.Min(ftlTime, _shuttle.DefaultStartupTime);
-                var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
-
-                if (TryComp<StationDataComponent>(comp.Station, out var data))
+                else if (comp.Stage < ExpeditionStage.MusicCountdown && nearestAnnouncementRemaining < audioLength) // _CS
                 {
-                    foreach (var member in data.Grids)
-                    {
-                        while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var shuttleXform))
-                        {
-                            if (shuttleXform.MapUid != uid || HasComp<FTLComponent>(shuttleUid))
-                                continue;
-
-                            // Frontier: try to find a potential destination for ship that doesn't collide with other grids.
-                            var mapId = _gameTicker.DefaultMap;
-                            if (!_mapSystem.TryGetMap(mapId, out var mapUid))
-                            {
-                                Log.Error($"Could not get DefaultMap EntityUID, shuttle {shuttleUid} may be stuck on expedition.");
-                                continue;
-                            }
-
-                            // rescue all the losers on the map who arent on the ship for whatever reason
-                            var shuttleGrid = shuttleXform.GridUid;
-                            DestinationPriority? deadLoserDestinations = null;
-                            if (shuttleGrid != null)
-                            {
-                                var mobQuery = EntityQueryEnumerator<MindContainerComponent, TransformComponent>();
-                                while (mobQuery.MoveNext(
-                                       out var mobUid,
-                                       out var mindC,
-                                       out var mobXform))
-                                {
-                                    if (mobXform.MapUid != uid)
-                                        continue;
-                                    if (mobXform.GridUid == shuttleGrid)
-                                        continue; // they're already on the shuttle
-                                    // only count creatures that have at one point had a player controlling them
-                                    if (!mindC.HasHadMind)
-                                        continue;
-                                    // move them to the shuttle
-                                    deadLoserDestinations ??= GetDeadLoserDestinations(shuttleGrid.Value);
-                                    RescueDork(
-                                        mobUid,
-                                        deadLoserDestinations,
-                                        shuttleGrid.Value);
-                                    Spawn("EffectSparks", Transform(mobUid).Coordinates);
-                                    Spawn("EffectGravityPulse", Transform(mobUid).Coordinates);
-                                    SoundSpecifier sound = new SoundPathSpecifier("/Audio/_CS/ExpedReturnToBed.ogg");
-                                    _audio.PlayPvs(sound, mobUid);
-                                }
-                            }
-
-                            // Destination generator parameters (move to CVAR?)
-                            int numRetries = 20; // Maximum number of retries
-                            float minDistance = 200f; // Minimum distance from another object, in meters
-                            float minRange = 750f; // Minimum distance from sector centre, in meters
-                            float maxRange = 3500f; // Maximum distance from sector centre, in meters
-
-                            // Get a list of all grid positions on the destination map
-                            List<Vector2> gridCoords = new();
-                            var gridQuery = EntityManager.AllEntityQueryEnumerator<MapGridComponent, TransformComponent>();
-                            while (gridQuery.MoveNext(out var _, out _, out var xform))
-                            {
-                                if (xform.MapID == mapId)
-                                    gridCoords.Add(_transform.GetWorldPosition(xform));
-                            }
-
-                            Vector2 dropLocation = _random.NextVector2(minRange, maxRange);
-                            for (int i = 0; i < numRetries; i++)
-                            {
-                                bool positionIsValid = true;
-                                foreach (var station in gridCoords)
-                                {
-                                    if (Vector2.Distance(station, dropLocation) < minDistance)
-                                    {
-                                        positionIsValid = false;
-                                        break;
-                                    }
-                                }
-
-                                if (positionIsValid)
-                                    break;
-
-                                // No good position yet, pick another random position.
-                                dropLocation = _random.NextVector2(minRange, maxRange);
-                            }
-
-                            _shuttle.FTLToCoordinates(
-                                shuttleUid,
-                                shuttle,
-                                new EntityCoordinates(mapUid.Value, dropLocation),
-                                0f,
-                                ftlTime,
-                                TravelTime);
-                            // End Frontier:  try to find a potential destination for ship that doesn't collide with other grids.
-                            //_shuttle.FTLToDock(shuttleUid, shuttle, member, ftlTime); // Frontier: use above instead
-                        }
-
-                        break;
-                    }
+                    comp.Stage = ExpeditionStage.MusicCountdown;
+                    dirty = true;
+                    var musicMinutes = GetDisplayedRemainingMinutes(nearestAnnouncementRemaining);
+                    Announce(uid, Loc.GetString("salvage-expedition-announcement-countdown-minutes", ("duration", musicMinutes)));
+                }
+                else if (comp.Stage < ExpeditionStage.Countdown && nearestAnnouncementRemaining < TimeSpan.FromMinutes(5)) // _CS: 4<5
+                {
+                    comp.Stage = ExpeditionStage.Countdown;
+                    dirty = true;
+                    var countdownMinutes = GetDisplayedRemainingMinutes(nearestAnnouncementRemaining);
+                    Announce(uid, Loc.GetString("salvage-expedition-announcement-countdown-minutes", ("duration", countdownMinutes)));
                 }
             }
 
-            if (remaining < TimeSpan.Zero)
-            {
-                QueueDel(uid);
-            }
+            if (dirty)
+                Dirty(uid, comp);
         }
 
-        // Frontier: mission-specific logic
+        // _CS: mission-specific logic
         // Destruction
         var structureQuery = EntityQueryEnumerator<SalvageDestructionExpeditionComponent, SalvageExpeditionComponent>();
 
@@ -480,7 +527,147 @@ public sealed partial class SalvageSystem
                 Announce(uid, Loc.GetString("salvage-expedition-completed"));
             }
         }
-        // End Frontier: mission-specific logic
+        // _CS End: mission-specific logic
+    }
+
+    private TimeSpan GetDefaultShipExpeditionDuration(SalvageExpeditionComponent expedition)
+    {
+        return expedition.MissionParams.OpenContract
+            ? SharedShipExpeditionDuration
+            : StandardShipExpeditionDuration;
+    }
+
+    private bool IsShuttleAnchorExtending(EntityUid expeditionMap, EntityUid shuttleUid)
+    {
+        var anchorQuery = EntityQueryEnumerator<StationAnchorComponent, TransformComponent, PowerChargeComponent>();
+        while (anchorQuery.MoveNext(out _, out var anchor, out var anchorXform, out var anchorPower))
+        {
+            if (!anchor.ExtendDuration)
+                continue;
+
+            if (!anchor.SwitchedOn || !anchorPower.Active)
+                continue;
+
+            if (anchorXform.MapUid != expeditionMap || anchorXform.GridUid != shuttleUid)
+                continue;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ClearPausedShuttleCacheForMap(EntityUid expeditionMap)
+    {
+        var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
+        while (shuttleQuery.MoveNext(out var shuttleUid, out _, out var shuttleXform))
+        {
+            if (shuttleXform.MapUid != expeditionMap)
+                continue;
+
+            _pausedShuttleExpeditionRemaining.Remove(shuttleUid);
+        }
+    }
+
+    private void TryAutoReturnShuttle(
+        EntityUid expeditionMap,
+        SalvageExpeditionComponent expedition,
+        EntityUid shuttleUid,
+        ShuttleComponent shuttle,
+        TransformComponent shuttleXform,
+        TimeSpan shuttleRemaining)
+    {
+        // Try to find a destination that does not collide with other grids.
+        var mapId = _gameTicker.DefaultMap;
+        if (!_mapSystem.TryGetMap(mapId, out var mapUid))
+        {
+            Log.Error($"Could not get DefaultMap EntityUID, shuttle {shuttleUid} may be stuck on expedition.");
+            return;
+        }
+
+        var ftlTime = (float)shuttleRemaining.TotalSeconds;
+        if (shuttleRemaining < TimeSpan.FromSeconds(_shuttle.DefaultStartupTime))
+            ftlTime = MathF.Max(0, (float)shuttleRemaining.TotalSeconds - 0.5f);
+
+        ftlTime = MathF.Min(ftlTime, _shuttle.DefaultStartupTime);
+
+        // Rescue stranded players to this shuttle only when allowed for this departure path.
+        var shuttleGrid = shuttleXform.GridUid;
+        DestinationPriority? deadLoserDestinations = null;
+        if (shuttleGrid != null)
+        {
+            var forceShortened = expedition.ForcedDepartureShuttles.Contains(shuttleGrid.Value);
+            var shouldRescueBodies = !expedition.MissionParams.OpenContract || !forceShortened;
+
+            var mobQuery = EntityQueryEnumerator<MindContainerComponent, TransformComponent>();
+            while (mobQuery.MoveNext(out var mobUid, out var mindC, out var mobXform))
+            {
+                if (!shouldRescueBodies)
+                    continue;
+
+                if (mobXform.MapUid != expeditionMap)
+                    continue;
+
+                if (mobXform.GridUid == shuttleGrid)
+                    continue;
+
+                if (!mindC.HasHadMind)
+                    continue;
+
+                if (expedition.MissionParams.OpenContract)
+                {
+                    if (!expedition.SharedArrivalShuttles.TryGetValue(mobUid, out var assignedShuttle) || assignedShuttle != shuttleGrid.Value)
+                        continue;
+                }
+
+                deadLoserDestinations ??= GetDeadLoserDestinations(shuttleGrid.Value);
+                RescueDork(mobUid, deadLoserDestinations, shuttleGrid.Value);
+                Spawn("EffectSparks", Transform(mobUid).Coordinates);
+                Spawn("EffectGravityPulse", Transform(mobUid).Coordinates);
+                SoundSpecifier sound = new SoundPathSpecifier("/Audio/_CS/ExpedReturnToBed.ogg");
+                _audio.PlayPvs(sound, mobUid);
+            }
+        }
+
+        int numRetries = 20;
+        float minDistance = 200f;
+        float minRange = 750f;
+        float maxRange = 3500f;
+
+        var gridCoords = new List<Vector2>();
+        var gridQuery = EntityManager.AllEntityQueryEnumerator<MapGridComponent, TransformComponent>();
+        while (gridQuery.MoveNext(out var _, out _, out var xform))
+        {
+            if (xform.MapID == mapId)
+                gridCoords.Add(_transform.GetWorldPosition(xform));
+        }
+
+        var dropLocation = _random.NextVector2(minRange, maxRange);
+        for (var i = 0; i < numRetries; i++)
+        {
+            var positionIsValid = true;
+            foreach (var station in gridCoords)
+            {
+                if (Vector2.Distance(station, dropLocation) < minDistance)
+                {
+                    positionIsValid = false;
+                    break;
+                }
+            }
+
+            if (positionIsValid)
+                break;
+
+            dropLocation = _random.NextVector2(minRange, maxRange);
+        }
+
+        _shuttle.FTLToCoordinates(
+            shuttleUid,
+            shuttle,
+            new EntityCoordinates(mapUid.Value, dropLocation),
+            0f,
+            ftlTime,
+            TravelTime);
     }
 
     /// <summary>
@@ -634,7 +821,7 @@ public sealed partial class SalvageSystem
             return;
         if (TryComp<ThermalRegulatorComponent>(
                 mobUid,
-                out var regulator)) // Frontier: Look for normal body temperature and use it
+                out var regulator)) // _CS: Look for normal body temperature and use it
         {
             _temperature.ForceChangeTemperature(
                 mobUid,
@@ -793,19 +980,29 @@ public sealed partial class SalvageSystem
     {
         if (component.Aborted)
             return;
+
         component.Aborted = true;
         // everyone is dead or ssd, abort the expedition
         const int departTime = 20;
-        Announce(mapUid, Loc.GetString("salvage-expedition-abort-wipe", ("departTime", departTime)));
+        Announce(mapUid, Loc.GetString("salvage-expedition-abort-wipe"));
+        Announce(mapUid, Loc.GetString("salvage-expedition-announcement-shuttle-leave-seconds", ("departTime", departTime)));
         component.NextAutoAbortCheck = TimeSpan.FromDays(1); // prevent further checks
-        var newEndTime = _timing.CurTime + TimeSpan.FromSeconds(departTime);
 
-        if (component.EndTime <= newEndTime)
-            return;
+        var forcedDeparture = _timing.CurTime + TimeSpan.FromSeconds(departTime);
+        var shuttleQuery = EntityQueryEnumerator<ShuttleComponent, TransformComponent>();
+        while (shuttleQuery.MoveNext(out var shuttleUid, out _, out var shuttleXform))
+        {
+            if (shuttleXform.MapUid != mapUid)
+                continue;
+
+            component.ShuttleEndTimes[shuttleUid] = forcedDeparture;
+            component.ForcedDepartureShuttles.Add(shuttleUid);
+            _pausedShuttleExpeditionRemaining[shuttleUid] = TimeSpan.FromSeconds(departTime);
+        }
 
         component.Stage = ExpeditionStage.FinalCountdown;
-        component.EndTime = newEndTime;
-
+        component.EndTime = forcedDeparture;
+        Dirty(mapUid, component);
     }
 
     private void UpdateSsdGoobers(EntityUid mapUid, SalvageExpeditionComponent component)
@@ -831,6 +1028,76 @@ public sealed partial class SalvageSystem
                 continue;
             // they are ssd, add them to the list
             component.InitialSsdGoobers.Add(uid);
+        }
+    }
+
+    private void TrackSharedArrivalShuttles(EntityUid shuttleUid, EntityUid mapUid, SalvageExpeditionComponent expedition)
+    {
+        if (!expedition.MissionParams.OpenContract)
+            return;
+
+        var query = EntityQueryEnumerator<MindContainerComponent, TransformComponent>();
+        while (query.MoveNext(out var mobUid, out var mindContainer, out var xform))
+        {
+            if (xform.MapUid != mapUid)
+                continue;
+
+            if (xform.GridUid != shuttleUid)
+                continue;
+
+            // Keep this aligned with rescue eligibility: entities that have had a mind are treated as player bodies.
+            if (!mindContainer.HasHadMind)
+                continue;
+
+            expedition.SharedArrivalShuttles[mobUid] = shuttleUid;
+        }
+    }
+
+    private void UpdateSharedShuttleAssociations(EntityUid mapUid, SalvageExpeditionComponent expedition)
+    {
+        if (!expedition.MissionParams.OpenContract)
+            return;
+
+        var activeShuttleGrids = new HashSet<EntityUid>();
+        var shuttleQuery = EntityQueryEnumerator<ShuttleComponent, TransformComponent>();
+        while (shuttleQuery.MoveNext(out _, out var shuttleXform))
+        {
+            if (shuttleXform.MapUid != mapUid)
+                continue;
+
+            if (shuttleXform.GridUid is not { Valid: true } shuttleGrid)
+                continue;
+
+            activeShuttleGrids.Add(shuttleGrid);
+        }
+
+        if (activeShuttleGrids.Count == 0)
+            return;
+
+        var query = EntityQueryEnumerator<MindContainerComponent, TransformComponent>();
+        while (query.MoveNext(out var mobUid, out var mindContainer, out var xform))
+        {
+            if (xform.MapUid != mapUid)
+                continue;
+
+            if (xform.GridUid is not { Valid: true } mobGrid)
+                continue;
+
+            if (!activeShuttleGrids.Contains(mobGrid))
+                continue;
+
+            if (!mindContainer.HasHadMind)
+                continue;
+
+            expedition.SharedArrivalShuttles[mobUid] = mobGrid;
+        }
+
+        foreach (var trackedMob in expedition.SharedArrivalShuttles.Keys.ToArray())
+        {
+            if (EntityManager.EntityExists(trackedMob))
+                continue;
+
+            expedition.SharedArrivalShuttles.Remove(trackedMob);
         }
     }
 

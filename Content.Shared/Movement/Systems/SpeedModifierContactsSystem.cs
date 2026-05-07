@@ -1,3 +1,4 @@
+using System;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
 using Content.Shared.Gravity;
@@ -9,15 +10,19 @@ using Robust.Shared.Physics.Systems;
 using Content.Shared.StepTrigger.Components; // imp edit
 using Content.Shared.StepTrigger.Systems; // imp edit
 using Robust.Shared.Map.Components; // imp edit
+using Robust.Shared.Timing;
 
 namespace Content.Shared.Movement.Systems;
 
 public sealed class SpeedModifierContactsSystem : EntitySystem
 {
+    private static readonly TimeSpan ContactRemovalGrace = TimeSpan.FromMilliseconds(150);
+
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedGravitySystem _gravity = default!;
     [Dependency] private readonly MovementSpeedModifierSystem _speedModifierSystem = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     [Dependency] private readonly SharedMapSystem _map = default!; // imp edit
 
@@ -153,12 +158,25 @@ public sealed class SpeedModifierContactsSystem : EntitySystem
             walkSpeed = MathF.Max(walkSpeed, evMax.MaxWalkSlowdown);
             sprintSpeed = MathF.Max(sprintSpeed, evMax.MaxSprintSlowdown);
 
+            component.LastContactUpdate = _timing.CurTime;
+            component.LastWalkSpeedModifier = walkSpeed;
+            component.LastSprintSpeedModifier = sprintSpeed;
             args.ModifySpeed(walkSpeed, sprintSpeed);
         }
 
         // no longer colliding with anything
         if (remove)
+        {
+            if (_timing.CurTime - component.LastContactUpdate <= ContactRemovalGrace &&
+                (!MathHelper.CloseTo(component.LastWalkSpeedModifier, 1f) ||
+                 !MathHelper.CloseTo(component.LastSprintSpeedModifier, 1f)))
+            {
+                args.ModifySpeed(component.LastWalkSpeedModifier, component.LastSprintSpeedModifier);
+                return;
+            }
+
             _toRemove.Add(uid);
+        }
     }
 
     private void OnEntityExit(EntityUid uid, SpeedModifierContactsComponent component, ref EndCollideEvent args)

@@ -1,5 +1,6 @@
 using Content.Server.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
+using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
@@ -10,8 +11,31 @@ namespace Content.Server.Movement.Systems;
 
 public sealed class JetpackSystem : SharedJetpackSystem
 {
+    private const string BloodRedMagbootsPrototype = "ClothingShoesBootsMagSyndie";
+
     [Dependency] private readonly GasTankSystem _gasTank = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<JetpackComponent, ItemToggledEvent>(OnJetpackItemToggled);
+    }
+
+    private void OnJetpackItemToggled(Entity<JetpackComponent> ent, ref ItemToggledEvent args)
+    {
+        if (!args.Activated)
+            return;
+
+        if (!TryComp<MetaDataComponent>(ent, out var meta) ||
+            meta.EntityPrototype?.ID != BloodRedMagbootsPrototype)
+        {
+            return;
+        }
+
+        SetEnabled(ent, ent.Comp, false);
+    }
 
     protected override bool CanEnable(EntityUid uid, JetpackComponent component)
     {

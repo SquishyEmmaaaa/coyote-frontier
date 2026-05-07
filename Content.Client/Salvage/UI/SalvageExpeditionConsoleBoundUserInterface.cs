@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Numerics;
 using Content.Client._NF.Salvage.UI; // Frontier
 using Content.Client.Stylesheets;
 using Content.Shared.CCVar;
@@ -50,10 +51,14 @@ public sealed class SalvageExpeditionConsoleBoundUserInterface : BoundUserInterf
         _window.Progression = null;
         _window.Cooldown = current.CooldownTime;
         _window.NextOffer = current.NextOffer;
-        _window.Claimed = current.Claimed;
+        _window.SharedNextOffer = current.SharedNextOffer; // Frontier
+        _window.SharedCooldown = current.SharedCooldownTime; // Frontier
+        _window.Claimed = false;
         _window.SetFinishDisabled(!current.CanFinish); // Frontier
         _window.ClearOptions();
         var salvage = _entManager.System<SalvageSystem>();
+        var activeMission = current.Missions.FirstOrDefault(m => m.Index == current.ActiveMission);
+        var missionActive = current.ActiveMission != 0 && (activeMission == null || !activeMission.OpenContract);
 
         for (var i = 0; i < current.Missions.Count; i++)
         {
@@ -84,21 +89,35 @@ public sealed class SalvageExpeditionConsoleBoundUserInterface : BoundUserInterf
                 Margin = new Thickness(0f, 0f, 0f, 5f),
             });
 
-            offering.AddContent(new Label
+            if (!missionParams.OpenContract)
             {
-                Text = Loc.GetString("salvage-expedition-difficulty-players"),
-                HorizontalAlignment = Control.HAlignment.Left,
-            });
+                offering.AddContent(new Label
+                {
+                    Text = Loc.GetString("salvage-expedition-difficulty-players"),
+                    HorizontalAlignment = Control.HAlignment.Left,
+                });
 
-            offering.AddContent(new Label
+                offering.AddContent(new Label
+                {
+                    Text = difficultyProto.RecommendedPlayers.ToString(),
+                    FontColorOverride = StyleNano.NanoGold,
+                    HorizontalAlignment = Control.HAlignment.Left,
+                    Margin = new Thickness(0f, 0f, 0f, 5f),
+                });
+            }
+            else
             {
-                Text = difficultyProto.RecommendedPlayers.ToString(),
-                FontColorOverride = StyleNano.NanoGold,
-                HorizontalAlignment = Control.HAlignment.Left,
-                Margin = new Thickness(0f, 0f, 0f, 5f),
-            });
+                // The OPEN CONTRACT banner already adds extra vertical height above the
+                // details block, so only keep a small compensating spacer here.
+                offering.AddContent(new Control
+                {
+                    MinSize = new Vector2(0f, 12f),
+                });
+            }
 
-            // Details
+            // Open Contract banner (shown above title stripe)
+            offering.OpenContract = missionParams.OpenContract;
+
             offering.AddContent(new Label
             {
                 Text = Loc.GetString("salvage-expedition-window-hostiles")
@@ -186,9 +205,14 @@ public sealed class SalvageExpeditionConsoleBoundUserInterface : BoundUserInterf
             };
 
             offering.Claimed = current.ActiveMission == missionParams.Index;
-            offering.Disabled = current.Claimed || current.Cooldown;
+            offering.Disabled = missionParams.OpenContract
+                ? current.SharedBoardCooldown || current.FtlLocked || current.Claimed || (missionActive && current.ActiveMission != missionParams.Index) // Frontier: open contract uses shared board cooldown
+                : current.Cooldown || current.FtlLocked || current.Claimed || (missionActive && current.ActiveMission != missionParams.Index);
 
-            _window.AddOption(offering);
+            if (missionParams.OpenContract)
+                _window.AddSharedOption(offering); // Frontier
+            else
+                _window.AddOption(offering);
         }
     }
 }

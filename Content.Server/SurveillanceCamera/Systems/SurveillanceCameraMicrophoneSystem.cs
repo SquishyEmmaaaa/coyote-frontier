@@ -1,7 +1,10 @@
 using Content.Server.Chat.Systems;
+using Content.Server.Instruments;
 using Content.Server.Speech;
 using Content.Server.Speech.Components;
+using Content.Shared.Chat;
 using Content.Shared.Whitelist;
+using Robust.Shared.Audio.Midi;
 using Robust.Shared.Player;
 using static Content.Server.Chat.Systems.ChatSystem;
 
@@ -11,6 +14,9 @@ public sealed class SurveillanceCameraMicrophoneSystem : EntitySystem
 {
     [Dependency] private readonly SharedTransformSystem _xforms = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+
+    // _CS Start: emote and MIDI relay expansion
+
     public override void Initialize()
     {
         base.Initialize();
@@ -18,6 +24,102 @@ public sealed class SurveillanceCameraMicrophoneSystem : EntitySystem
         SubscribeLocalEvent<SurveillanceCameraMicrophoneComponent, ListenEvent>(RelayEntityMessage);
         SubscribeLocalEvent<SurveillanceCameraMicrophoneComponent, ListenAttemptEvent>(CanListen);
         SubscribeLocalEvent<ExpandICChatRecipientsEvent>(OnExpandRecipients);
+        SubscribeLocalEvent<SurveillanceCameraEmoteMessageEvent>(OnEmoteMessage);
+        SubscribeLocalEvent<InstrumentMidiPlayedEvent>(OnInstrumentMidiPlayed);
+        SubscribeLocalEvent<InstrumentChannelFilterChangedEvent>(OnInstrumentChannelFilterChanged);
+    }
+
+    private void OnInstrumentChannelFilterChanged(InstrumentChannelFilterChangedEvent args)
+    {
+        if (args.Channel < 0 || args.Channel >= RobustMidiEvent.MaxChannels)
+            return;
+
+        var uid = args.Source;
+        var sourceXform = Transform(uid);
+        var xformQuery = GetEntityQuery<TransformComponent>();
+
+        foreach (var (microphone, camera, xform) in EntityQuery<SurveillanceCameraMicrophoneComponent, SurveillanceCameraComponent, TransformComponent>())
+        {
+            if (camera.ActiveMonitors.Count == 0)
+                continue;
+
+            if (xform.MapID != sourceXform.MapID)
+                continue;
+
+            var cameraPos = _xforms.GetWorldPosition(xform, xformQuery);
+            var sourcePos = _xforms.GetWorldPosition(uid, xformQuery);
+
+            if ((sourcePos - cameraPos).Length() > microphone.Range)
+                continue;
+
+            var ev = new SurveillanceCameraMidiChannelFilterSyncEvent(uid, args.Channel, args.Filtered);
+            foreach (var monitor in camera.ActiveMonitors)
+            {
+                RaiseLocalEvent(monitor, ev);
+            }
+        }
+    }
+
+    private void OnInstrumentMidiPlayed(InstrumentMidiPlayedEvent args)
+    {
+        if (args.MidiEvents.Length == 0)
+            return;
+
+        var uid = args.Source;
+        var sourceXform = Transform(uid);
+        var xformQuery = GetEntityQuery<TransformComponent>();
+
+        foreach (var (microphone, camera, xform) in EntityQuery<SurveillanceCameraMicrophoneComponent, SurveillanceCameraComponent, TransformComponent>())
+        {
+            if (camera.ActiveMonitors.Count == 0)
+                continue;
+
+            if (xform.MapID != sourceXform.MapID)
+                continue;
+
+            var cameraPos = _xforms.GetWorldPosition(xform, xformQuery);
+            var sourcePos = _xforms.GetWorldPosition(uid, xformQuery);
+
+            if ((sourcePos - cameraPos).Length() > microphone.Range)
+                continue;
+
+            var ev = new SurveillanceCameraMidiSendEvent(uid, args.MidiEvents);
+            foreach (var monitor in camera.ActiveMonitors)
+            {
+                RaiseLocalEvent(monitor, ev);
+            }
+        }
+    }
+
+    private void OnEmoteMessage(SurveillanceCameraEmoteMessageEvent args)
+    {
+        if (string.IsNullOrWhiteSpace(args.Message))
+            return;
+
+        var uid = args.Source;
+        var sourceXform = Transform(uid);
+        var xformQuery = GetEntityQuery<TransformComponent>();
+
+        foreach (var (camera, xform) in EntityQuery<SurveillanceCameraComponent, TransformComponent>())
+        {
+            if (camera.ActiveMonitors.Count == 0)
+                continue;
+
+            if (xform.MapID != sourceXform.MapID)
+                continue;
+
+            var cameraPos = _xforms.GetWorldPosition(xform, xformQuery);
+            var sourcePos = _xforms.GetWorldPosition(uid, xformQuery);
+
+            if ((sourcePos - cameraPos).Length() > EmoteRange)
+                continue;
+
+            var ev = new SurveillanceCameraSpeechSendEvent(uid, args.Message, InGameICChatType.Emote);
+            foreach (var monitor in camera.ActiveMonitors)
+            {
+                RaiseLocalEvent(monitor, ev);
+            }
+        }
     }
 
     private void OnExpandRecipients(ExpandICChatRecipientsEvent ev)
@@ -70,7 +172,7 @@ public sealed class SurveillanceCameraMicrophoneSystem : EntitySystem
         if (!TryComp(uid, out SurveillanceCameraComponent? camera))
             return;
 
-        var ev = new SurveillanceCameraSpeechSendEvent(args.Source, args.Message);
+        var ev = new SurveillanceCameraSpeechSendEvent(args.Source, args.Message, InGameICChatType.Speak);
 
         foreach (var monitor in camera.ActiveMonitors)
         {
@@ -93,17 +195,49 @@ public sealed class SurveillanceCameraMicrophoneSystem : EntitySystem
         else
             RemCompDeferred<ActiveListenerComponent>(uid);
     }
+
+    // _CS End: emote and MIDI relay expansion
 }
 
+// _CS Start: surveillance camera relay event payloads
 public sealed class SurveillanceCameraSpeechSendEvent : EntityEventArgs
 {
     public EntityUid Speaker { get; }
     public string Message { get; }
+    public InGameICChatType Type { get; }
 
-    public SurveillanceCameraSpeechSendEvent(EntityUid speaker, string message)
+    public SurveillanceCameraSpeechSendEvent(EntityUid speaker, string message, InGameICChatType type)
     {
         Speaker = speaker;
         Message = message;
+        Type = type;
     }
 }
+
+public sealed class SurveillanceCameraMidiSendEvent : EntityEventArgs
+{
+    public EntityUid Source { get; }
+    public RobustMidiEvent[] MidiEvents { get; }
+
+    public SurveillanceCameraMidiSendEvent(EntityUid source, RobustMidiEvent[] midiEvents)
+    {
+        Source = source;
+        MidiEvents = midiEvents;
+    }
+}
+
+public sealed class SurveillanceCameraMidiChannelFilterSyncEvent : EntityEventArgs
+{
+    public EntityUid Source { get; }
+    public int Channel { get; }
+    public bool Filtered { get; }
+
+    public SurveillanceCameraMidiChannelFilterSyncEvent(EntityUid source, int channel, bool filtered)
+    {
+        Source = source;
+        Channel = channel;
+        Filtered = filtered;
+    }
+}
+// _CS End: surveillance camera relay event payloads
 

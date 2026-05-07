@@ -18,4 +18,16 @@ public abstract class SharedInstrumentSystem : EntitySystem
         component.InstrumentProgram = program;
         Dirty(uid, component);
     }
+
+    public void SetFilteredChannel(EntityUid uid, SharedInstrumentComponent component, int channel, bool filtered)
+    {
+        if (channel < 0 || channel >= component.FilteredChannels.Length)
+            return;
+
+        if (component.FilteredChannels[channel] == filtered)
+            return;
+
+        component.FilteredChannels[channel] = filtered;
+        Dirty(uid, component);
+    }
 }

@@ -2,8 +2,8 @@
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
                       Title="{Loc 'shuttle-console-window-title'}"
-                      SetSize="960 782"
-                      MinSize="720 560">
+                      SetSize="960 960"
+                      MinSize="720 720">
         <BoxContainer Orientation="Vertical"
                                   HorizontalExpand="True"
                                   VerticalExpand="True">

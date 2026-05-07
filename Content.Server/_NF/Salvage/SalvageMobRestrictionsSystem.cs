@@ -109,23 +109,9 @@ public sealed class SalvageMobRestrictionsSystem : EntitySystem
 
         // If this NPC gets onto a shuttle grid, release salvage restrictions permanently.
         // This allows it to return with the ship and avoids expedition cleanup deleting it.
-        // Keep the component so death-state add/remove behavior still runs (e.g. Unrevivable on death).
         if (gridUid is { } currentGrid && HasComp<ShuttleComponent>(currentGrid))
         {
-            if (component.LinkedGridEntity != currentGrid)
-            {
-                if (TryComp(component.LinkedGridEntity, out SalvageMobRestrictionsGridComponent? oldGrid))
-                    oldGrid.MobsToKill.Remove(uid);
-
-                if (!TryComp(currentGrid, out SalvageMobRestrictionsGridComponent? shuttleGrid))
-                    shuttleGrid = AddComp<SalvageMobRestrictionsGridComponent>(currentGrid);
-
-                shuttleGrid.MobsToKill.Add(uid);
-                component.LinkedGridEntity = currentGrid;
-            }
-
-            EntityManager.AddComponents(uid, component.AddComponentsReturnGrid);
-            EntityManager.RemoveComponents(uid, component.RemoveComponentsReturnGrid);
+            RemComp<NFSalvageMobRestrictionsComponent>(uid);
             return;
         }
 

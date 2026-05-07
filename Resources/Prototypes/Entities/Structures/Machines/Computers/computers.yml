@@ -1434,7 +1434,12 @@
   - type: DeviceNetworkRequiresPower
   - type: Speech
     speechVerb: Robotic
+  - type: Instrument
+    allowPercussion: true
+    allowProgramChange: true
+    respectMidiLimits: false
   - type: SurveillanceCameraSpeaker
+    requiresEntertainmentCamera: true # Frontier: only relay speech from entertainment cameras
   - type: SurveillanceCameraMonitor
   - type: ActivatableUI
     key: enum.SurveillanceCameraMonitorUiKey.Key

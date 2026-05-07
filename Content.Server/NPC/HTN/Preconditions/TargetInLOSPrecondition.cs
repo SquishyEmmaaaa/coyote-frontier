@@ -12,7 +12,6 @@ public sealed partial class TargetInLOSPrecondition : HTNPrecondition
     // Mono
     private EntityQuery<PhysicsComponent> _physicsQuery;
     private EntityQuery<RequireProjectileTargetComponent> _requireTargetQuery;
-
     [DataField("targetKey")]
     public string TargetKey = "Target";
 
@@ -46,8 +45,11 @@ public sealed partial class TargetInLOSPrecondition : HTNPrecondition
         if (!blackboard.TryGetValue<EntityUid>(TargetKey, out var target, _entManager))
             return false;
 
+        if (!_entManager.HasComponent<TransformComponent>(owner) ||
+            !_entManager.HasComponent<TransformComponent>(target))
+            return false;
+
         var range = blackboard.GetValueOrDefault<float>(RangeKey, _entManager);
-        var collisionGroup = UseOpaqueForLOSChecksKey ? CollisionGroup.Opaque : (CollisionGroup.Impassable | CollisionGroup.InteractImpassable);
                                                                       // Mono
         return _interaction.InRangeUnobstructed(owner, target, range, ObstructedMask, predicate: (EntityUid entity) =>
         {

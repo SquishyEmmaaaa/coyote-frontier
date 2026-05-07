@@ -35,6 +35,19 @@ public sealed partial class OfferingWindowOption : PanelContainer
         set => TitleStripe.Text = value;
     }
 
+    public bool OpenContract
+    {
+        set
+        {
+            OpenContractStripe.Visible = value;
+            if (value)
+            {
+                OpenContractLabel.Text = Loc.GetString("salvage-expedition-window-open-contract");
+                OpenContractLabel.FontColorOverride = Color.FromHex("#FFF066");
+            }
+        }
+    }
+
     public event Action<BaseButton.ButtonEventArgs>? ClaimPressed;
 
     public OfferingWindowOption()

@@ -765,6 +765,9 @@ public sealed partial class ChatSystem : SharedChatSystem
             var ev = new NFEntityEmotedEvent(source, action);
             RaiseLocalEvent(source, ev, true);
         }
+
+        var surveillanceEmoteEv = new SurveillanceCameraEmoteMessageEvent(source, action);
+        RaiseLocalEvent(source, surveillanceEmoteEv, true);
         // End Frontier
 
         SendInVoiceRange(ChatChannel.Emotes,
@@ -1358,6 +1361,21 @@ public sealed class NFEntityEmotedEvent : EntityEventArgs
     }
 }
 // End Frontier
+
+/// <summary>
+///     Raised on an entity when it sends a public emote message.
+/// </summary>
+public sealed class SurveillanceCameraEmoteMessageEvent : EntityEventArgs
+{
+    public readonly EntityUid Source;
+    public readonly string Message;
+
+    public SurveillanceCameraEmoteMessageEvent(EntityUid source, string message)
+    {
+        Source = source;
+        Message = message;
+    }
+}
 
 /// <summary>
 ///     InGame IC chat is for chat that is specifically ingame (not lobby) but is also in character, i.e. speaking.

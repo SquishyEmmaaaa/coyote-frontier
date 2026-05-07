@@ -8,6 +8,7 @@ salvage-expedition-type = Mission
 salvage-expedition-window-title = Salvage expeditions
 salvage-expedition-window-difficulty = Difficulty:
 salvage-expedition-window-details = Details:
+salvage-expedition-window-open-contract = OPEN CONTRACT
 salvage-expedition-window-hostiles = Hostiles:
 salvage-expedition-window-duration = Duration:
 salvage-expedition-window-biome = Biome:
@@ -17,6 +18,7 @@ offering-window-claimed = Claimed
 offering-window-claim = Claim
 
 salvage-expedition-window-next = Next offer
+salvage-expedition-window-shared-next = Open Contract
 
 salvage-expedition-difficulty-Moderate = Moderate
 salvage-expedition-difficulty-Hazardous = Hazardous
