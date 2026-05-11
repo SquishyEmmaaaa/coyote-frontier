@@ -753,8 +753,10 @@ public sealed partial class SalvageSystem
         Spawn("EffectSparks", Transform(mobUid).Coordinates);
         // unbuckle them if they are buckled
         _buckle.TryUnbuckle(mobUid, null);
-        if (TryTeleportToRecordedSharedShuttlePosition(mobUid, shuttleGrid, expedition))
+        // _CS Start: shared expedition random return shortcut
+        if (TryTeleportToRandomSharedShuttlePosition(mobUid, possibleDestinations, shuttleGrid, expedition))
             return;
+        // _CS End: shared expedition random return shortcut
         // try beds first
         foreach (var bedUid in possibleDestinations.Beds)
         {
@@ -787,7 +789,12 @@ public sealed partial class SalvageSystem
         }
     }
 
-    private bool TryTeleportToRecordedSharedShuttlePosition(EntityUid mobUid, EntityUid shuttleGrid, SalvageExpeditionComponent expedition)
+    // _CS Start: randomized shared body return placement
+    private bool TryTeleportToRandomSharedShuttlePosition(
+        EntityUid mobUid,
+        DestinationPriority possibleDestinations,
+        EntityUid shuttleGrid,
+        SalvageExpeditionComponent expedition)
     {
         if (!expedition.MissionParams.OpenContract)
             return false;
@@ -795,14 +802,65 @@ public sealed partial class SalvageSystem
         if (!expedition.SharedArrivalShuttles.TryGetValue(mobUid, out var assignedShuttle) || assignedShuttle != shuttleGrid)
             return false;
 
-        if (!expedition.SharedArrivalShuttleLocalPositions.TryGetValue(mobUid, out var localPosition))
+        if (TryTeleportToRandomStrap(mobUid, possibleDestinations.Beds))
+            return true;
+
+        if (TryTeleportToRandomStrap(mobUid, possibleDestinations.Chairs))
+            return true;
+
+        if (TryTeleportToRandomEntityCoordinates(mobUid, shuttleGrid, possibleDestinations.Consoles))
+            return true;
+
+        if (TryTeleportToRandomEntityCoordinates(mobUid, shuttleGrid, possibleDestinations.Fallback))
+            return true;
+
+        return false;
+    }
+
+    private bool TryTeleportToRandomStrap(EntityUid mobUid, List<EntityUid> destinations)
+    {
+        if (destinations.Count == 0)
             return false;
 
-        var mobXform = Transform(mobUid);
-        _transform.SetCoordinates(mobUid, new EntityCoordinates(shuttleGrid, localPosition));
-        _transform.AttachToGridOrMap(mobUid, mobXform);
-        return true;
+        var shuffled = new List<EntityUid>(destinations);
+        while (shuffled.Count > 0)
+        {
+            var index = _random.Next(shuffled.Count);
+            var strapUid = shuffled[index];
+            shuffled.RemoveAt(index);
+
+            if (TryTeleportToStrap(mobUid, strapUid))
+                return true;
+        }
+
+        return false;
     }
+
+    private bool TryTeleportToRandomEntityCoordinates(EntityUid mobUid, EntityUid shuttleGrid, List<EntityUid> destinations)
+    {
+        if (destinations.Count == 0)
+            return false;
+
+        var shuffled = new List<EntityUid>(destinations);
+        while (shuffled.Count > 0)
+        {
+            var index = _random.Next(shuffled.Count);
+            var destinationUid = shuffled[index];
+            shuffled.RemoveAt(index);
+
+            var destinationXform = Transform(destinationUid);
+            if (destinationXform.GridUid != shuttleGrid)
+                continue;
+
+            var mobXform = Transform(mobUid);
+            _transform.SetCoordinates(mobUid, destinationXform.Coordinates);
+            _transform.AttachToGridOrMap(mobUid, mobXform);
+            return true;
+        }
+
+        return false;
+    }
+    // _CS End: randomized shared body return placement
 
     /// <summary>
     /// Gets a list of possible destinations for dead/dying crew to be rescued to.
