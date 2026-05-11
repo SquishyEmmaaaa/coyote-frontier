@@ -2761,3 +2761,14 @@ Entries:
   id: 315
   time: '2026-05-08T07:40:34.0000000+00:00'
   url: https://github.com/ARF-SS13/coyote-frontier/pull/1193
+- author: QTNeen
+  changes:
+    - type: Fix
+      message: Fixed marking & digileg issues
+    - type: Fix
+      message: Fixed expedition mapping issue
+    - type: Fix
+      message: Marking "Show over Clothing" toggle fixed
+  id: 316
+  time: '2026-05-11T04:25:40.0000000+00:00'
+  url: https://github.com/ARF-SS13/coyote-frontier/pull/1195
