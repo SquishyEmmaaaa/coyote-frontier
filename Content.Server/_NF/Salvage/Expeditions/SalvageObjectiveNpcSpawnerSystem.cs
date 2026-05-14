@@ -1,3 +1,4 @@
+// _CS Start: salvage objective nearby NPC spawn placement
 using System.Numerics;
 using Content.Shared.NPC.Components;
 using Content.Shared.Construction.EntitySystems;
@@ -7,6 +8,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+// _CS End: salvage objective nearby NPC spawn placement
 
 namespace Content.Server._NF.Salvage.Expeditions;
 
@@ -18,8 +20,10 @@ public sealed class SalvageObjectiveNpcSpawnerSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedTransformSystem _xforms = default!;
+    // _CS Start: salvage objective nearby NPC spawn placement
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly AnchorableSystem _anchorable = default!;
+    // _CS End: salvage objective nearby NPC spawn placement
     [Dependency] private readonly IRobustRandom _random = default!;
 
     public override void Initialize()
@@ -44,10 +48,12 @@ public sealed class SalvageObjectiveNpcSpawnerSystem : EntitySystem
 
             var spawn = _random.Pick(comp.SpawnPrototypes);
 
+            // _CS Start: salvage objective nearby NPC spawn placement
             if (TryGetNearbySpawnCoordinates(uid, comp, out var coords))
                 SpawnAtPosition(spawn, coords);
             else
                 SpawnAtPosition(spawn, Transform(uid).Coordinates);
+            // _CS End: salvage objective nearby NPC spawn placement
         }
     }
 
@@ -76,6 +82,7 @@ public sealed class SalvageObjectiveNpcSpawnerSystem : EntitySystem
         return count;
     }
 
+    // _CS Start: salvage objective nearby NPC spawn placement
     private bool TryGetNearbySpawnCoordinates(EntityUid uid, SalvageObjectiveNpcSpawnerComponent comp, out EntityCoordinates coords)
     {
         var xform = Transform(uid);
@@ -120,4 +127,5 @@ public sealed class SalvageObjectiveNpcSpawnerSystem : EntitySystem
         coords = default;
         return false;
     }
+    // _CS End: salvage objective nearby NPC spawn placement
 }

@@ -6,6 +6,7 @@ namespace Content.Server.Salvage.Expeditions;
 
 public static class SalvageExpeditionReservation
 {
+    // _CS Start: exact landing clearance reservation logic
     public static readonly float MinimumLandingClearanceTiles = 5f;
 
     public static Box2 GetLandingZone(Box2 shuttleBox, Vector2 origin, float padding = 16f)
@@ -68,4 +69,5 @@ public static class SalvageExpeditionReservation
         return reserveByBounds ||
                IntersectsReservedLandingZone(expedition, tileBox);
     }
+    // _CS End: exact landing clearance reservation logic
 }

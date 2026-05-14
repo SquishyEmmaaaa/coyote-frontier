@@ -12,7 +12,9 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Salvage.Expeditions;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Localizations;
+// _CS Start: shared expedition arrival and reservation handling
 using Content.Shared.Parallax.Biomes;
+// _CS End: shared expedition arrival and reservation handling
 using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Map; // _CS
@@ -55,7 +57,9 @@ public sealed partial class SalvageSystem
     [Dependency] private readonly TemperatureSystem _temperature = default!;
 
     private static readonly TimeSpan StandardShipExpeditionDuration = TimeSpan.FromMinutes(15);
+    // _CS Start: extended shared expedition duration
     private static readonly TimeSpan SharedShipExpeditionDuration = TimeSpan.FromMinutes(30);
+    // _CS End: extended shared expedition duration
     private readonly Dictionary<EntityUid, TimeSpan> _pausedShuttleExpeditionRemaining = new();
     private readonly Dictionary<EntityUid, TimeSpan> _previousNaturalAnnouncementRemaining = new();
 
@@ -164,6 +168,7 @@ public sealed partial class SalvageSystem
         if (!TryComp<SalvageExpeditionComponent>(args.MapUid, out var component))
             return;
 
+        // _CS Start: shared expedition arrival and reservation handling
         ReleaseLandingZoneReservation(args.MapUid, args.Entity, component);
 
         if (!component.ShuttleEndTimes.ContainsKey(args.Entity))
@@ -243,6 +248,7 @@ public sealed partial class SalvageSystem
                 }
             }
         }
+        // _CS End: shared expedition arrival and reservation handling
 
         // _CS: type-specific announcement — also per-ship for shared expeditions so late arrivals are briefed.
         string? missionMsg = null;
@@ -292,6 +298,7 @@ public sealed partial class SalvageSystem
         }
     }
 
+    // _CS Start: landing zone reservation release after shuttle arrival
     private void ReleaseLandingZoneReservation(EntityUid expeditionMap, EntityUid shuttleGridUid, SalvageExpeditionComponent expedition)
     {
         if (!TryComp<MapGridComponent>(shuttleGridUid, out var shuttleGrid))
@@ -328,6 +335,7 @@ public sealed partial class SalvageSystem
             Dirty(expeditionMap, expedition);
         }
     }
+    // _CS End: landing zone reservation release after shuttle arrival
 
     private void OnFTLStarted(ref FTLStartedEvent ev)
     {
@@ -693,7 +701,9 @@ public sealed partial class SalvageSystem
                 }
 
                 deadLoserDestinations ??= GetDeadLoserDestinations(shuttleGrid.Value);
+                // _CS Start: shared expedition random body return routing
                 RescueDork(mobUid, deadLoserDestinations, shuttleGrid.Value, expedition);
+                // _CS End: shared expedition random body return routing
                 Spawn("EffectSparks", Transform(mobUid).Coordinates);
                 Spawn("EffectGravityPulse", Transform(mobUid).Coordinates);
                 SoundSpecifier sound = new SoundPathSpecifier("/Audio/_CS/ExpedReturnToBed.ogg");
