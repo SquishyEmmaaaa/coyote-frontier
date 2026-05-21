@@ -1,4 +1,5 @@
-﻿using Robust.Shared.Serialization;
+// _CS Start
+using Robust.Shared.Serialization;
 
 namespace Content.Shared._NF.ShuttleRecords;
 
@@ -48,7 +49,7 @@ public class ShuttleRecord(
     [ViewVariables]
     public TimeSpan? TimeOfSale { get; set; } = timeOfSale;
 
-    // The amount of spesos it had costed to purchase this vessel.
+    // The amount of credits it had costed to purchase this vessel.
     [ViewVariables]
     public uint PurchasePrice { get; set; } = purchasePrice;
 
@@ -67,3 +68,4 @@ public class ShuttleRecord(
     [ViewVariables]
     public string? StoredShipFullName { get; set; }
 }
+// _CS End

@@ -1,3 +1,4 @@
+# _CS Start
 # region Bureaucracy
 - type: entityTable
   id: TableDungeonLootGeneralBureaucracy
@@ -822,13 +823,13 @@
     children:
     - id: BriefcaseBrown
       weight: 0.65
-    - id: BriefcaseThiefBribingBundleFilled # 20k spesos
+    - id: BriefcaseThiefBribingBundleFilled # 20k credits
       weight: 0.2
     - id: BriefcaseSyndieSniperBundleFilled
       weight: 0.1
     - id: BriefcaseBrownFilled
       weight: 0.05
-    - id: BriefcaseSyndieLobbyingBundleFilled # 200k spesos
+    - id: BriefcaseSyndieLobbyingBundleFilled # 200k credits
       weight: 0.01
 
 - type: entityTable
@@ -877,3 +878,4 @@
     - id: StorageCanisterBroken
     - id: WaterVaporCanisterBroken
     - id: OxygenCanisterBroken
+# _CS End

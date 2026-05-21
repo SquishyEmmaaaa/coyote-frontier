@@ -1,10 +1,11 @@
+# _CS Start
 # Appraisal cartridge
 appraisal-program-name = AppraiseAll Plus
 appraisal-label-name = Item
 appraisal-label-price = Appraised Price
 
 # Ledger cartridge
-ledger-program-name = SpesoFlow Lite
+ledger-program-name = CreditFlow Lite
 ledger-header = Sector Ledger
 ledger-total-income = Total Income
 ledger-no-income = None
@@ -41,3 +42,4 @@ ledger-entry-type-StationWithdrawalWorkOrder = Work Orders
 ledger-entry-type-StationWithdrawalSupplies = Supply Expenses
 ledger-entry-type-StationWithdrawalBounty = Bounties
 ledger-entry-type-StationWithdrawalOther = Misc. Expenses
+# _CS End

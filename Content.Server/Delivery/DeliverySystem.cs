@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Server.Cargo.Systems;
 using Content.Server.Chat.Systems;
 using Content.Server.Station.Systems;
@@ -128,7 +129,7 @@ public sealed partial class DeliverySystem : SharedDeliverySystem
             -calculatedPenalty,
             dist);
 
-        var message = Loc.GetString("delivery-penalty-message", ("reason", reason), ("spesos", calculatedPenalty), ("account", localizedAccountName.ToUpper()));
+        var message = Loc.GetString("delivery-penalty-message", ("reason", reason), ("credits", calculatedPenalty), ("account", localizedAccountName.ToUpper()));
         _chat.TrySendInGameICMessage(ent, message, InGameICChatType.Speak, hideChat: true);
 
         ent.Comp.WasPenalized = true;
@@ -142,3 +143,4 @@ public sealed partial class DeliverySystem : SharedDeliverySystem
         UpdateSpawner(frameTime);
     }
 }
+// _CS End

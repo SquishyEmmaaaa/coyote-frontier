@@ -1,3 +1,4 @@
+// _CS Start
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Cargo.Components;
@@ -132,7 +133,7 @@ public sealed partial class CargoSystem
                 ("item", Loc.GetString(entry.Name)))}");
             msg.PushNewline();
         }
-        msg.AddMarkupOrThrow(Loc.GetString("bounty-console-manifest-reward", ("reward", BankSystemExtensions.ToSpesoString(prototype.Reward)))); // Frontier: add ToSpesoString
+        msg.AddMarkupOrThrow(Loc.GetString("bounty-console-manifest-reward", ("reward", BankSystemExtensions.ToCreditString(prototype.Reward)))); // Frontier: add ToCreditString
         _paperSystem.SetContent((uid, paper), msg.ToMarkup());
     }
 
@@ -541,3 +542,4 @@ public sealed partial class CargoSystem
         }
     }
 }
+// _CS End

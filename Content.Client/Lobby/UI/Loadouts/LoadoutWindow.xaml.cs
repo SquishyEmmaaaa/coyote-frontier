@@ -1,3 +1,4 @@
+// _CS Start
 using System.Numerics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.CCVar;
@@ -96,7 +97,7 @@ public sealed partial class LoadoutWindow : FancyWindow
         CalculateLoadoutCost(loadout, collection);
         // Frontier - update bank balance label text - value should not change.
         Balance.Margin = new Thickness(5, 2, 5, 5);
-        Balance.Text = Loc.GetString("frontier-loadout-balance", ("balance", BankSystemExtensions.ToSpesoString(Profile.BankBalance)));
+        Balance.Text = Loc.GetString("frontier-loadout-balance", ("balance", BankSystemExtensions.ToCreditString(Profile.BankBalance)));
     }
 
     public void RefreshLoadouts(RoleLoadout loadout, ICommonSession session, IDependencyCollection collection)
@@ -130,7 +131,8 @@ public sealed partial class LoadoutWindow : FancyWindow
         }
 
         Cost.Margin = new Thickness(5, 2, 5, 5);
-        Cost.Text = Loc.GetString("frontier-loadout-cost", ("cost", BankSystemExtensions.ToSpesoString(cost)));
+        Cost.Text = Loc.GetString("frontier-loadout-cost", ("cost", BankSystemExtensions.ToCreditString(cost)));
     }
     // End Frontier
 }
+// _CS End

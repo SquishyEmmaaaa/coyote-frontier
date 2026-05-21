@@ -1,3 +1,4 @@
+# _CS Start
 - type: entity
   parent: SpaceCash
   id: SpaceCash15000
@@ -35,7 +36,7 @@
 - type: entity
   parent: BaseItem
   id: SpaceCashCounterfeit
-  name: spessos
+  name: counterfeit credits
   description: You gotta heve mony.
   components:
   - type: Item
@@ -111,7 +112,7 @@
 
 - type: currency
   id: Spesso
-  displayName: bank-currency-display-spesos-fake
+  displayName: bank-currency-display-credits-fake
   cash: 
     1: SpaceCashCounterfeit
   canWithdraw: true # I guess?
@@ -127,3 +128,4 @@
     state: cash_100000
   - type: Stack
     count: 200000
+# _CS End

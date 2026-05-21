@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+// _CS Start
+using System.Globalization;
 
 namespace Content.Shared._NF.Bank;
 
@@ -62,9 +63,25 @@ public static class BankSystemExtensions
         return ToCurrencyString(amount, culture, symbolOverride: "", symbolLocation: CurrencySymbolLocation.Prefix); //Prefix results in no space, prefer that.
     }
 
-    public static string ToSpesoString(int amount, CultureInfo? culture = null)
+    /// <summary>
+    /// Gets the localized name of the currency (Credits).
+    /// </summary>
+    /// <returns>The name of the currency</returns>
+    public static string GetMoneyName()
+    {
+        return "Credits";
+    }
+
+    public static string ToCreditString(int amount, CultureInfo? culture = null)
     {
         return ToCurrencyString(amount, culture, symbolOverride: "$", symbolLocation: CurrencySymbolLocation.Prefix);
+    }
+
+    // Deprecated: Use ToCreditString instead
+    [Obsolete("Use ToCreditString instead")]
+    public static string ToSpesoString(int amount, CultureInfo? culture = null)
+    {
+        return ToCreditString(amount, culture);
     }
 
     public static string ToDoubloonString(int amount, CultureInfo? culture = null)
@@ -77,4 +94,4 @@ public static class BankSystemExtensions
         return ToCurrencyString(amount, culture, symbolOverride: "FUC", symbolLocation: CurrencySymbolLocation.Suffix);
     }
 }
-
+// _CS End

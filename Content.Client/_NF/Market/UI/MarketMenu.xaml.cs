@@ -1,4 +1,5 @@
-﻿using System.Linq;
+// _CS Start
+using System.Linq;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._NF.Bank;
 using Content.Shared._NF.Market;
@@ -73,9 +74,9 @@ public sealed partial class MarketMenu : FancyWindow
             CartEntitiesCount.FontColorOverride = Color.OrangeRed;
         else
             CartEntitiesCount.FontColorOverride = null;
-        BalanceLabel.Text = BankSystemExtensions.ToSpesoString(uiState.Balance);
-        CartBalanceLabel.Text = Loc.GetString("market-cart-balance", ("cost", BankSystemExtensions.ToSpesoString(uiState.CartBalance)), ("cratecost", BankSystemExtensions.ToSpesoString(uiState.TransactionCost)));
-        PurchaseCart.Text = Loc.GetString("market-purchase-cart-button", ("cost", BankSystemExtensions.ToSpesoString(uiState.CartBalance + uiState.TransactionCost)));
+        BalanceLabel.Text = BankSystemExtensions.ToCreditString(uiState.Balance);
+        CartBalanceLabel.Text = Loc.GetString("market-cart-balance", ("cost", BankSystemExtensions.ToCreditString(uiState.CartBalance)), ("cratecost", BankSystemExtensions.ToCreditString(uiState.TransactionCost)));
+        PurchaseCart.Text = Loc.GetString("market-purchase-cart-button", ("cost", BankSystemExtensions.ToCreditString(uiState.CartBalance + uiState.TransactionCost)));
         SetUiEnabled(uiState.Enabled);
         PurchaseCart.Disabled = uiState.CartDataList.Count <= 0;
     }
@@ -191,6 +192,7 @@ public sealed partial class MarketMenu : FancyWindow
     private string GetPriceString(int quantity, double price)
     {
         var printPrice = (int)double.Round(quantity * price);
-        return BankSystemExtensions.ToSpesoString(printPrice);
+        return BankSystemExtensions.ToCreditString(printPrice);
     }
 }
+// _CS End

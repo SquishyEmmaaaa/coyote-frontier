@@ -1,3 +1,4 @@
+# _CS Start
 barsign-component-name = bar sign
 barsign-ui-menu = Bar Sign Configuration
 barsign-ui-set-label = Set Sign:
@@ -94,7 +95,7 @@ barsign-prototype-description-emprah = Enjoyed by fanatics, heretics, and brain-
 
 ## Spacebucks
 barsign-prototype-name-spacebucks = Spacebucks
-barsign-prototype-description-spacebucks = You can't get away from them, even in space, and even after we started calling them 'spesos' instead.
+barsign-prototype-description-spacebucks = You can't get away from them, even in space, and even after we started calling them 'credits' instead.
 
 ## Maltroach
 barsign-prototype-name-maltroach = Maltroach
@@ -109,3 +110,4 @@ barsign-prototype-description-empbarsign = Something has gone very wrong.
 
 ## SignOff
 barsign-prototype-description-sign-off = This sign doesn't seem to be on.
+# _CS End

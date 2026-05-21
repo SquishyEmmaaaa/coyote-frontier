@@ -1,3 +1,4 @@
+// _CS Start
 using System.Linq;
 using System.Text;
 using Content.Server.Popups;
@@ -96,7 +97,7 @@ namespace Content.Server.Forensics
         // Frontier: add dead drop rewards
         /// <summary>
         ///     Rewards the NFSD department for scanning a dead drop.
-        ///     Gives some amount of spesos and FUC to the
+        ///     Gives some amount of credits and FUC to the
         /// </summary>
         private void GiveReward(EntityUid uidOrigin, EntityUid target, int spesoAmount, FixedPoint2 fucAmount, string msg)
         {
@@ -132,13 +133,13 @@ namespace Content.Server.Forensics
             if (fucAmount >= 1)
             {
                 msgString = msgString + " " + Loc.GetString("forensic-reward-amount",
-                ("spesos", BankSystemExtensions.ToSpesoString(spesoAmount)),
+                ("credits", BankSystemExtensions.ToCreditString(spesoAmount)),
                 ("fuc", BankSystemExtensions.ToFUCString(fucAmount.Int())));
             }
             else
             {
-                msgString = msgString + " " + Loc.GetString("forensic-reward-amount-speso-only",
-                ("spesos", BankSystemExtensions.ToSpesoString(spesoAmount)));
+                msgString = msgString + " " + Loc.GetString("forensic-reward-amount-credits-only",
+                ("credits", BankSystemExtensions.ToCreditString(spesoAmount)));
             }
             _radio.SendRadioMessage(uidOrigin, msgString, channel, uidOrigin);
         }
@@ -400,3 +401,4 @@ namespace Content.Server.Forensics
         }
     }
 }
+// _CS End

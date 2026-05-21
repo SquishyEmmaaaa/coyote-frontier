@@ -1,3 +1,4 @@
+# _CS Start
 # Altered Nyano mail tables
 - type: entity
   categories: [ HideSpawnMenu ]
@@ -393,7 +394,7 @@
   components:
   - type: Mail
     contents:
-      # Expected value: 5175 spesos
+      # Expected value: 5175 credits
     - id: SpaceCash1000
       orGroup: Cash
       prob: 0.3
@@ -2030,3 +2031,4 @@
   - type: Mail
     contents:
     - id: FoodBoxDonut
+# _CS End

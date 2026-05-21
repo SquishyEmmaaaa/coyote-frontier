@@ -1,3 +1,4 @@
+# _CS Start
 ## UI
 adventure-list-start = [color=gold]NT Galactic Bank[/color]
 adventure-list-profit = made a total profit of [color=#d19e5e]{$amount}[/color].
@@ -25,7 +26,7 @@ nf-pirate-description = A gang of pirates is on the loose! Take care out in spac
 nf-test-title = Test
 nf-test-description = A preset intended for testing. No POIs, no bluespace events, final destination.
 
-currency = Spesos
+currency = Credits
 
 shipyard-rules-default1 =
     Thank you for your interest in Nanotrasen Security Forces.
@@ -48,3 +49,4 @@ public-transit-shuttle-name = Bus {$number}{$suffix}
 public-transit-shuttle-screen-text = {" "}BUS  {$number}{$suffix}
 public-transit-departure = Now departing for {$destination}. Estimated travel time: {$flytime} seconds.
 public-transit-arrival = Thank you for choosing NT Public Transit. Next stop: {$destination}. Bus departs in {$waittime} seconds.
+# _CS End

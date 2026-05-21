@@ -1,3 +1,4 @@
+# _CS Start
 stack-scrap-chunk = scrap {$amount ->
     [1] chunk
     *[other] chunks
@@ -71,8 +72,8 @@ stack-dried-shrooms = dried shrooms
 stack-fungal-whiff-tobacco = fungal whiff tobacco
 stack-sweet-dreams-tobacco = sweet dreams tobacco
 stack-nf-credit = {$amount ->
-    [1] speso
-    *[other] spesos
+    [1] credit
+    *[other] credits
 }
 stack-counterfeit-credit = {$amount ->
     [1] spesso
@@ -117,3 +118,4 @@ stack-inflatable-window = inflatable window
 stack-inflatable-door-window = inflatable windoor
 stack-inflatable-dock = inflatable external airlock
 stack-inflatable-crate = inflatable crate
+# _CS End

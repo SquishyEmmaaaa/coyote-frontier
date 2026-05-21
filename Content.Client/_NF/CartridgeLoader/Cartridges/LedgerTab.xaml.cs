@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Shared._NF.Bank;
 using Content.Shared._NF.Bank.BUI;
 using Content.Shared._NF.Bank.Components;
@@ -61,7 +62,7 @@ public sealed partial class LedgerTab : Control
 
         var ledgerEntry = new LedgerEntry();
         ledgerEntry.Description.Text = Loc.GetString($"ledger-entry-type-{type}");
-        ledgerEntry.Value.Text = BankSystemExtensions.ToSpesoString(amount);
+        ledgerEntry.Value.Text = BankSystemExtensions.ToCreditString(amount);
         ledgerEntry.Value.FontColorOverride = isExpense ? ExpenseColor : IncomeColor;
 
         list.AddChild(ledgerEntry);
@@ -71,22 +72,23 @@ public sealed partial class LedgerTab : Control
     public void UpdateTotals()
     {
         if (_hasIncome)
-            IncomeValue.Text = BankSystemExtensions.ToSpesoString(_totalIncome);
+            IncomeValue.Text = BankSystemExtensions.ToCreditString(_totalIncome);
         else
             IncomeValue.Text = Loc.GetString("ledger-no-income");
 
         if (_hasExpenses)
-            ExpensesValue.Text = BankSystemExtensions.ToSpesoString(_totalExpenses);
+            ExpensesValue.Text = BankSystemExtensions.ToCreditString(_totalExpenses);
         else
             ExpensesValue.Text = Loc.GetString("ledger-no-expenses");
 
         if (_hasIncome || _hasExpenses)
         {
             int totalBalance = _totalIncome - _totalExpenses;
-            BalanceValue.Text = BankSystemExtensions.ToSpesoString(totalBalance);
+            BalanceValue.Text = BankSystemExtensions.ToCreditString(totalBalance);
             BalanceValue.FontColorOverride = totalBalance < 0 ? ExpenseColor : IncomeColor;
         }
         else
             BalanceValue.Text = Loc.GetString("ledger-no-balance");
     }
 }
+// _CS End

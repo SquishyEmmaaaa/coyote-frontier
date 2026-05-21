@@ -1,3 +1,4 @@
+# _CS Start
 thief-backpack-window-title = thieving kit
 
 thief-backpack-window-description =
@@ -54,7 +55,7 @@ thief-backpack-category-communicator-description =
     Money is power, and secrets are money. Use your silver tongue
     and wealth to subvert the station.
     Includes: Master key for all station channels, a CyberSun pen,
-    voice chameleon mask, and 20k spesos inside a briefcase.
+    voice chameleon mask, and 20k credits inside a briefcase.
 
 thief-backpack-category-smuggler-name = smuggler kit
 thief-backpack-category-smuggler-description =
@@ -62,3 +63,4 @@ thief-backpack-category-smuggler-description =
     Don't forget to link your fulton.
     Includes: Fulton beacon, 10 fultons, 3 smoke grenades,
     and an invisible crate to hide valuable loot.
+# _CS End

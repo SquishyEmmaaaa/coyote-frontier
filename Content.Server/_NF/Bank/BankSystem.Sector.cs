@@ -1,3 +1,4 @@
+// _CS Start
 using System.Runtime.InteropServices;
 using Content.Server._NF.SectorServices;
 using Content.Shared._NF.Bank.BUI;
@@ -25,7 +26,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// Attempts to remove money from a sector bank account.
     /// </summary>
     /// <param name="account">The account to be withdrawn from</param>
-    /// <param name="amount">The amount of spesos to remove from the account.</param>
+    /// <param name="amount">The amount of credits to remove from the account.</param>
     /// <returns>true if the transaction was successful, false if it was not.</returns>
     [PublicAPI]
     public bool TrySectorWithdraw(SectorBankAccount account, int amount, LedgerEntryType reason, SectorBankComponent? bank = null)
@@ -65,7 +66,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// Attempts to add money to a sector bank account.
     /// </summary>
     /// <param name="mobUid">The UID that the bank account is connected to, typically the player controlled mob</param>
-    /// <param name="amount">The amount of spesos to remove from the bank account</param>
+    /// <param name="amount">The amount of credits to remove from the bank account</param></param>
     /// <param name="reason">The purpose of this withdrawal</param>
     /// <returns>true if the transaction was successful, false if it was not</returns>
     [PublicAPI]
@@ -100,7 +101,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// Retrieves a character's balance via its in-game entity, if it has one.
     /// </summary>
     /// <param name="ent">The UID that the bank account is connected to, typically the player controlled mob</param>
-    /// <param name="balance">When successful, contains the account balance in spesos. Otherwise, set to 0.</param>
+    /// <param name="balance">When successful, contains the account balance in credits. Otherwise, set to 0.</param>
     /// <returns>true if the account was successfully queried.</returns>
     [PublicAPI]
     public bool TryGetBalance(SectorBankAccount account, out int balance)
@@ -147,3 +148,4 @@ public sealed partial class BankSystem : SharedBankSystem
             TrySectorDeposit(accountId, seconds * accountInfo.IncreasePerSecond, LedgerEntryType.TickingIncome, bank);
     }
 }
+// _CS End

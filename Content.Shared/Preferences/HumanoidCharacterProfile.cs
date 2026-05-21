@@ -1,3 +1,4 @@
+// _CS Start
 using System.Linq;
 using System.Text.RegularExpressions;
 using Content.Shared._NF.Bank;
@@ -577,7 +578,7 @@ namespace Content.Shared.Preferences
             );
 
         // Frontier
-        public string BankBalanceText => BankSystemExtensions.ToSpesoString(BankBalance);
+        public string BankBalanceText => BankSystemExtensions.ToCreditString(BankBalance);
 
         public bool MemberwiseEquals(ICharacterProfile maybeOther)
         {
@@ -928,3 +929,4 @@ namespace Content.Shared.Preferences
         }
     }
 }
+// _CS End

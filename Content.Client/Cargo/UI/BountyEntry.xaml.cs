@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Client.Message;
 using Content.Shared._NF.Bank;
 using Content.Shared.Cargo;
@@ -41,7 +42,7 @@ public sealed partial class BountyEntry : BoxContainer
                 ("item", Loc.GetString(entry.Name))));
         }
         ManifestLabel.SetMarkup(Loc.GetString("bounty-console-manifest-label", ("item", string.Join(", ", items))));
-        RewardLabel.SetMarkup(Loc.GetString("bounty-console-reward-label", ("reward", BankSystemExtensions.ToSpesoString(bountyPrototype.Reward)))); // Frontier: bountyPrototype.Reward<BankSystemExtensions.ToSpesoString(bountyPrototype.Reward)
+        RewardLabel.SetMarkup(Loc.GetString("bounty-console-reward-label", ("reward", BankSystemExtensions.ToCreditString(bountyPrototype.Reward)))); // Frontier: bountyPrototype.Reward<BankSystemExtensions.ToCreditString(bountyPrototype.Reward)
         DescriptionLabel.SetMarkup(Loc.GetString("bounty-console-description-label", ("description", Loc.GetString(bountyPrototype.Description))));
         IdLabel.SetMarkup(Loc.GetString("bounty-console-id-label", ("id", bounty.Id)));
 
@@ -69,3 +70,4 @@ public sealed partial class BountyEntry : BoxContainer
         UpdateSkipButton(args.DeltaSeconds);
     }
 }
+// _CS End

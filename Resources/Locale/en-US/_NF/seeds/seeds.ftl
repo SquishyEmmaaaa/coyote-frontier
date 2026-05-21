@@ -1,8 +1,9 @@
+# _CS Start
 seeds-noun-nothing = {""}
 
 # Seeds
-seeds-spesos-name = gold leaf
-seeds-spesos-display-name = gold leaf trees
+seeds-credits-name = gold leaf
+seeds-credits-display-name = gold leaf trees
 seeds-pear-name = pear
 seeds-pear-display-name = pear trees
 seeds-coffee-name = coffee
@@ -25,3 +26,4 @@ botany-seed-jar-name = jar of {$seedName} {$seedNoun}
 
 # Missing upstream definitions
 seeds-lemoon-display-name = lemoon trees
+# _CS End

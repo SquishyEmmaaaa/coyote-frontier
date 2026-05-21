@@ -1,3 +1,4 @@
+# _CS Start
 # region Security
 uplink-security-hardsuit-name = Bronze Patrol Suit
 uplink-security-hardsuit-desc = The standard-issue NFSD space proof suit for patrol duty. This bronze variant has cadet rank markings.
@@ -176,7 +177,7 @@ uplink-security-shotincend-desc = A box of lethal .50 calibre incendiary shotgun
 uplink-security-shotslug-name = Lethal Shotgun Slug Shells
 uplink-security-shotslug-desc = A box of lethal .50 calibre slug shotgun shells.
 
-uplink-security-cash1000-name = 1,000 Spesos
+uplink-security-cash1000-name = 1,000 Credits
 uplink-security-cash1000-desc = Cold, hard cash.
 
 uplink-security-empgrenade-box-name = EMP Grenade Box
@@ -372,3 +373,4 @@ uplink-syndicate-segway-desc = Move around in style without dirtying your blood 
 
 uplink-Telecrystal = Telecrystal
 uplink-Telecrystal-desc = Telecrystals for use in Syndicate Uplinks
+# _CS End

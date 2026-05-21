@@ -1,3 +1,4 @@
+# _CS Start
 # Inventory template fills
 
 # The items here will be spawned inside a duffel bag
@@ -21,27 +22,27 @@
   id: TableStorageFillStashCoins
   table: !type:GroupSelector
     children:
-    # Diamonds: 500 spesos for one
+    # Diamonds: 500 credits for one
     - id: TreasureCoinDiamond 
     - id: TreasureCoinDiamond3
     - id: TreasureCoinDiamond5
     - id: TreasureCoinDiamond10
-    # Adamantine: 250 spesos for one
+    # Adamantine: 250 credits for one
     - id: TreasureCoinAdamantine
     - id: TreasureCoinAdamantine3
     - id: TreasureCoinAdamantine5
     - id: TreasureCoinAdamantine10
-    # Gold: 175 spesos for one
+    # Gold: 175 credits for one
     - id: TreasureCoinGold
     - id: TreasureCoinGold3
     - id: TreasureCoinGold5
     - id: TreasureCoinGold10
-    # Silver: 135 spesos for one
+    # Silver: 135 credits for one
     - id: TreasureCoinSilver
     - id: TreasureCoinSilver3
     - id: TreasureCoinSilver5
     - id: TreasureCoinSilver10
-    # Iron: 75 spesos for one
+    # Iron: 75 credits for one
     - id: TreasureCoinIron
     - id: TreasureCoinIron3
     - id: TreasureCoinIron5
@@ -51,19 +52,19 @@
   id: TableStorageFillStashJewelry
   table: !type:GroupSelector
     children:
-    - id: GoldRing # 300 spesos for one
-    - id: GoldRingDiamond # 1500 spesos for one
-    - id: GoldRingGem # 2100 spesos for one
-    - id: SilverRing # 275 spesos for one
-    - id: SilverRingDiamond # 1400 spesos for one
-    - id: SilverRingGem # 2000 spesos for one
+    - id: GoldRing # 300 credits for one
+    - id: GoldRingDiamond # 1500 credits for one
+    - id: GoldRingGem # 2100 credits for one
+    - id: SilverRing # 275 credits for one
+    - id: SilverRingDiamond # 1400 credits for one
+    - id: SilverRingGem # 2000 credits for one
     - id: IngotGold # 600 per full stack
     - id: IngotSilver # 450 per full stack
     - id: TowelColorGold # 10 per one, but think of the PRESTIGE!
     - id: ClothingNeckBling # 10 per one, but think of the PRESTIGE!
-    - id: WristwatchGold # 500 spesos for one (footprint: 4)
+    - id: WristwatchGold # 500 credits for one (footprint: 4)
       weight: 3
-    - id: ClothingMaskGoldenCursed # 5000 spesos for one (footprint: 4?)
+    - id: ClothingMaskGoldenCursed # 5000 credits for one (footprint: 4?)
       weight: 1
 
 - type: entityTable # Max Inv. footprint: 9
@@ -312,11 +313,11 @@
     children:
     # Cash and Coins
     - !type:NestedSelector # Max Inv. footprint: 4
-      tableId: TableStorageFillStashJewelry # From 10 to 5000 spesos
+      tableId: TableStorageFillStashJewelry # From 10 to 5000 credits
     - !type:NestedSelector # Max Inv. footprint: 2
-      tableId: TableStorageFillStashCash # From 5000 to 30000 spesos
+      tableId: TableStorageFillStashCash # From 5000 to 30000 credits
     - !type:NestedSelector # Max Inv. footprint: 1
-      tableId: TableStorageFillStashCoins # From 75 to ~5000 spesos
+      tableId: TableStorageFillStashCoins # From 75 to ~5000 credits
 
 - type: entityTable # Max Inv. footprint: 31
   id: TableStorageFillStashLoot
@@ -372,15 +373,15 @@
     - !type:NestedSelector # Max Inv. footprint: 12
       tableId: TableStorageFillStashJewelry
       rolls: !type:RangeNumberSelector
-        range: 1, 3 # From 10 to 15000 spesos
+        range: 1, 3 # From 10 to 15000 credits
     - !type:NestedSelector # Max Inv. footprint: 4
       tableId: TableStorageFillStashCash
       rolls: !type:RangeNumberSelector
-        range: 1, 2 # From 5 to 60000 spesos
+        range: 1, 2 # From 5 to 60000 credits
     - !type:NestedSelector # Max Inv. footprint: 3
       tableId: TableStorageFillStashCoins
       rolls: !type:RangeNumberSelector
-        range: 1, 3 # From 75 to 15000 spesos
+        range: 1, 3 # From 75 to 15000 credits
 
 - type: entityTable # Max Inv. footprint: 31
   id: TableStorageFillStashPunkThreads
@@ -468,3 +469,4 @@
     containers:
       storagebase: !type:NestedSelector
         tableId: TableStorageFillStashContraband
+# _CS End

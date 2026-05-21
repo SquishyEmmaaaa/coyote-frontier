@@ -22,7 +22,7 @@ public sealed partial class SalvageSystem
     /// Chance for a weather roll to produce weather.
     /// Kept low to avoid back-to-back events.
     /// </summary>
-    private const float WeatherRollChance = 0.3f;
+    private const float WeatherRollChance = 0.44f;
 
     private static readonly string[] SnowWeatherPhases =
     [
@@ -50,12 +50,15 @@ public sealed partial class SalvageSystem
     ];
 
     /// <summary>
-    /// Initialises weather for an expedition on first shuttle arrival.
+    /// Initialises weather for an expedition when its map is created.
     /// Caches the biome, performs the initial roll, and schedules the second roll.
     /// </summary>
     private void InitExpeditionWeather(EntityUid uid, SalvageExpeditionComponent comp)
     {
-        if (string.IsNullOrEmpty(comp.MissionParams.Difficulty))
+        if (comp.WeatherNextRoll != TimeSpan.MaxValue || comp.WeatherPhaseSequence != null)
+            return;
+
+        if (comp.MissionParams == null || string.IsNullOrEmpty(comp.MissionParams.Difficulty))
             return;
 
         if (!_prototypeManager.TryIndex<SalvageDifficultyPrototype>(comp.MissionParams.Difficulty, out var diff))
@@ -96,10 +99,6 @@ public sealed partial class SalvageSystem
 
         while (query.MoveNext(out _, out var comp, out var mapComp))
         {
-            // Do not process weather until the expedition is running.
-            if (comp.Stage == ExpeditionStage.Added)
-                continue;
-
             // Advance staged weather phases.
             if (comp.WeatherPhaseSequence != null && now >= comp.WeatherPhaseEnd)
             {

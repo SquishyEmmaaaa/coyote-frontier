@@ -1,3 +1,4 @@
+<!-- _CS Start -->
 <cartridges:MailMetricUiFragment
     xmlns:cartridges="clr-namespace:Content.Client._DV.CartridgeLoader.Cartridges"
     xmlns:customControls="clr-namespace:Content.Client.Administration.UI.CustomControls"
@@ -32,7 +33,7 @@
                 StyleClasses="monospace"
                 Align="Center"
                 Text="{Loc 'mail-metrics-count-header'}" />
-            <Label Name="SpesosLabel"
+            <Label Name="CreditsLabel"
                 SizeFlagsStretchRatio="1"
                 HorizontalExpand="True"
                 ClipText="True"
@@ -54,7 +55,7 @@
                 Align="Right"
                 StyleClasses="monospace"
                 ClipText="True" />
-            <Label Name="OpenedMailSpesos"
+            <Label Name="OpenedMailCredits"
                 SizeFlagsStretchRatio="1"
                 HorizontalExpand="True"
                 Align="Right"
@@ -75,7 +76,7 @@
                 Align="Right"
                 StyleClasses="monospace"
                 ClipText="True" />
-            <Label Name="ExpiredMailSpesos"
+            <Label Name="ExpiredMailCredits"
                 SizeFlagsStretchRatio="1"
                 HorizontalExpand="True"
                 Align="Right"
@@ -96,7 +97,7 @@
                 Align="Right"
                 StyleClasses="monospace"
                 ClipText="True" />
-            <Label Name="TamperedMailSpesos"
+            <Label Name="TamperedMailCredits"
                 SizeFlagsStretchRatio="1"
                 HorizontalExpand="True"
                 Align="Right"
@@ -117,7 +118,7 @@
                 Align="Right"
                 StyleClasses="monospace"
                 ClipText="True" />
-            <Label Name="DamagedMailSpesos"
+            <Label Name="DamagedMailCredits"
                 SizeFlagsStretchRatio="1"
                 HorizontalExpand="True"
                 StyleClasses="monospace"
@@ -138,7 +139,7 @@
                 StyleClasses="monospace"
                 Align="Right"
                 ClipText="True" />
-            <Label Name="UnopenedMailSpesos"
+            <Label Name="UnopenedMailCredits"
                 SizeFlagsStretchRatio="1"
                 HorizontalExpand="True"
                 Align="Right"
@@ -159,7 +160,7 @@
                 Align="Right"
                 StyleClasses="monospace"
                 ClipText="True" />
-            <Label Name="TotalMailSpesos"
+            <Label Name="TotalMailCredits"
                 SizeFlagsStretchRatio="1"
                 HorizontalExpand="True"
                 Align="Right"
@@ -181,3 +182,4 @@
             StyleClasses="LabelBig" />
     </BoxContainer>
 </cartridges:MailMetricUiFragment>
+<!-- _CS End -->

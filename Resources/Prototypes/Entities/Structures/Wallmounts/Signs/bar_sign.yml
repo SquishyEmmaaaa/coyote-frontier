@@ -1,3 +1,4 @@
+# _CS Start
 - type: entity
   id: BaseBarSign
   parent: BaseStructure
@@ -274,7 +275,7 @@
   parent: BaseBarSign
   id: BarSignSpacebucks
   name: Spacebucks
-  description: You can't get away from them, even in space, and even after we started calling them 'spesos' instead.
+  description: You can't get away from them, even in space, and even after we started calling them 'credits' instead.
   components:
   - type: BarSign
     current: Spacebucks
@@ -298,3 +299,4 @@
   components:
   - type: BarSign
     current: WhiskeyEchoes
+# _CS End

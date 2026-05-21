@@ -1,3 +1,4 @@
+# _CS Start
 - type: entity
   name: lantern
   parent: BaseItem
@@ -116,6 +117,96 @@
         map: [ "light" ]
   - type: Item
     sprite: Objects/Misc/Lights/lampgreen.rsi
+  - type: HolidayVisuals
+    holidays:
+      festive:
+      - FestiveSeason
+  - type: GenericVisualizer
+    visuals:
+      enum.HolidayVisuals.Holiday:
+        base:
+          festive:
+            sprite: Objects/Misc/Lights/lamp.rsi
+            state: christmaslamp
+        light:
+          festive:
+            sprite: Objects/Misc/Lights/lamp.rsi
+            state: christmaslamp-on
+
+- type: entity
+  name: lava lamp
+  id: LampLava
+  parent: [BaseLamp, MixedPowerMachine]
+  description: A groovy desk lamp with flowing lava.
+  components:
+  - type: Anchorable
+  - type: Sprite
+    sprite: _CS/Objects/Lights/lavalamp.rsi
+    offset: "0.0,0.4"
+    layers:
+      - state: OFF
+        map: [ "base" ]
+      - state: ON
+        shader: unshaded
+        visible: false
+        map: [ "light" ]
+  - type: Item
+    sprite: _CS/Objects/Lights/lavalamp.rsi
+  - type: StaticPrice
+    vendPrice: 500 # Coyote: Makes these cost 500 in all vendors.
+    price: 50 # Coyote: Price specified so vendor price doesn't force the server into an endless restart loop.
+  - type: Openable
+    sound:
+      collection: bottleOpenSounds
+    closeable: true
+    closeSound:
+      collection: bottleCloseSounds
+  - type: SolutionContainerManager
+    solutions:
+      drink:
+        maxVol: 30
+        reagents:
+        - ReagentId: Phlogiston
+          Quantity: 15
+        - ReagentId: Ipecac
+          Quantity: 5
+        - ReagentId: Slime
+          Quantity: 10
+  - type: MixableSolution
+    solution: drink
+  - type: SolutionTransfer
+    canChangeTransferAmount: true
+  - type: DrawableSolution
+    solution: drink
+  - type: RefillableSolution
+    solution: drink
+  - type: DrainableSolution
+    solution: drink
+  - type: ExaminableSolution
+    solution: drink
+  - type: Spillable
+    solution: drink
+  - type: FitsInDispenser
+    solution: drink
+  - type: UserInterface
+    interfaces:
+      enum.TransferAmountUiKey.Key:
+        type: TransferAmountBoundUserInterface
+  - type: PointLight
+    color: "#FF5A5A"
+    radius: 2.4
+    energy: 1.15
+  - type: LightBehaviour
+    behaviours:
+      - !type:FadeBehaviour
+        id: radiating
+        enabled: true
+        property: Energy
+        maxDuration: 4.5
+        startValue: 0.85
+        endValue: 1.15
+        isLooped: true
+        reverseWhenFinished: true
   - type: HolidayVisuals
     holidays:
       festive:
@@ -301,3 +392,4 @@
     materialComposition:
       Glass: 500
       Steel: 200
+# _CS End

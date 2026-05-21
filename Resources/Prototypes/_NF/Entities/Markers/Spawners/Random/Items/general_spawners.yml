@@ -1,3 +1,4 @@
+# _CS Start
 # region Bureaucracy
 - type: entity
   parent: MarkerBasePlaceFree
@@ -8,7 +9,6 @@
   - type: Sprite
     layers:
       - state: green
-        scale: 0.7, 0.7
       - sprite: Objects/Misc/bureaucracy.rsi
         state: labeler1
       - sprite: _NF/Markers/general.rsi
@@ -550,8 +550,8 @@
 
 - type: entity
   parent: MarkerBasePlaceFree
-  id: SpawnDungeonLootSpesos
-  name: random spesos
+  id: SpawnDungeonLootCredits
+  name: random credits
   suffix: Loot (Frontier)
   components:
   - type: Sprite
@@ -609,3 +609,4 @@
     deleteSpawnerAfterSpawn: false
     table: !type:NestedSelector
       tableId: TableDungeonLootGeneralBriefcases
+# _CS End

@@ -1,3 +1,4 @@
+// _CS Start
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -53,7 +54,7 @@ public sealed class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRuleCompon
         public int StartBalance;
         // Ending balance, obtained on game end or detach (NOTE: multiple detaches possible), whichever happens first.
         public int EndBalance;
-        // Entity name: used for display purposes ("The Feel of Fresh Bills earned 100,000 spesos")
+        // Entity name: used for display purposes ("The Feel of Fresh Bills earned 100,000 credits")
         public string Name;
         // User ID: used to validate incoming information.
         // If, for whatever reason, another player takes over this character, their initial balance is inaccurate.
@@ -107,11 +108,11 @@ public sealed class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRuleCompon
             string summaryText;
             if (profit < 0)
             {
-                summaryText = Loc.GetString("adventure-list-loss", ("amount", BankSystemExtensions.ToSpesoString(-profit)));
+                summaryText = Loc.GetString("adventure-list-loss", ("amount", BankSystemExtensions.ToCreditString(-profit)));
             }
             else
             {
-                summaryText = Loc.GetString("adventure-list-profit", ("amount", BankSystemExtensions.ToSpesoString(profit)));
+                summaryText = Loc.GetString("adventure-list-profit", ("amount", BankSystemExtensions.ToCreditString(profit)));
             }
             ev.AddLine($"- {playerInfo.Name} {summaryText}");
             allScore.Add(new Tuple<string, int>(playerInfo.Name, profit));
@@ -128,7 +129,7 @@ public sealed class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRuleCompon
         {
             if (highScore.First().Item2 < 0)
                 break;
-            var profitText = Loc.GetString("adventure-webhook-top-profit", ("amount", BankSystemExtensions.ToSpesoString(highScore.First().Item2)));
+            var profitText = Loc.GetString("adventure-webhook-top-profit", ("amount", BankSystemExtensions.ToCreditString(highScore.First().Item2)));
             relayText += $"{highScore.First().Item1} {profitText}";
             relayText += '\n';
             highScore.RemoveAt(0);
@@ -141,7 +142,7 @@ public sealed class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRuleCompon
         {
             if (highScore.First().Item2 > 0)
                 break;
-            var lossText = Loc.GetString("adventure-webhook-top-loss", ("amount", BankSystemExtensions.ToSpesoString(-highScore.First().Item2)));
+            var lossText = Loc.GetString("adventure-webhook-top-loss", ("amount", BankSystemExtensions.ToCreditString(-highScore.First().Item2)));
             relayText += $"{highScore.First().Item1} {lossText}";
             relayText += '\n';
             highScore.RemoveAt(0);
@@ -444,3 +445,4 @@ public sealed class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRuleCompon
         }
     }
 }
+// _CS End

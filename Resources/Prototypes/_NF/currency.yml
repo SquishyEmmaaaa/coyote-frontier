@@ -1,6 +1,7 @@
+# _CS Start
 - type: currency
   id: Speso
-  displayName: bank-currency-display-spesos
+  displayName: bank-currency-display-credits
   cash: 
     1: SpaceCash
   canWithdraw: true
@@ -18,3 +19,4 @@
   cash: 
     1: Doubloon1
   canWithdraw: true
+# _CS End

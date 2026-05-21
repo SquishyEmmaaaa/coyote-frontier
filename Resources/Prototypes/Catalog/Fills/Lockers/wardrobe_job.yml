@@ -1,3 +1,4 @@
+# _CS Start
  - type: entity
    id: WardrobePrisonFilled
    suffix: Filled
@@ -168,7 +169,7 @@
    id: WardrobeCargoFilled
    suffix: Filled
    parent: WardrobeCargo
-   description: "This locker? Maybe 500 spesos. Brotherhood? Priceless."
+   description: "This locker? Maybe 500 credits. Brotherhood? Priceless."
    components:
    - type: StorageFill
      contents:
@@ -220,3 +221,4 @@
        - id: ClothingShoesBootsWork
        - id: ClothingOuterVestHazard
        - id: ClothingUniformJumpskirtEngineering
+# _CS End

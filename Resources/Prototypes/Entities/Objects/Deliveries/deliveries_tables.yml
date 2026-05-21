@@ -1,3 +1,4 @@
+# _CS Start
 ### Spawners
 - type: entityTable
   id: RandomDeliveryBasic
@@ -78,7 +79,7 @@
       tableId: RandomAllSodaTable
 
 - type: entityTable # TODO: Add more variety!
-  id: LetterUncommonEntityTable # Some more varied things, should never be more expensive than 100 spesos
+  id: LetterUncommonEntityTable # Some more varied things, should never be more expensive than 100 credits
   table: !type:GroupSelector
     children:
     - !type:NestedSelector
@@ -91,7 +92,7 @@
     - id: Joint
 
 - type: entityTable # TODO: Add more variety!
-  id: LetterRareEntityTable # Interesting things that can actually be of use, should never be more expensive than 500 spesos
+  id: LetterRareEntityTable # Interesting things that can actually be of use, should never be more expensive than 500 credits
   table: !type:GroupSelector
     children:
     - id: ResearchDisk5000
@@ -157,3 +158,4 @@
     - !type:NestedSelector
       tableId: SyndieMaintLoot
       weight: 0.5
+# _CS End

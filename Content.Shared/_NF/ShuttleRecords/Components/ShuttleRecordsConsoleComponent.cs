@@ -1,4 +1,5 @@
-﻿using Content.Shared._NF.Bank.Components;
+// _CS Start
+using Content.Shared._NF.Bank.Components;
 using Content.Shared.Containers.ItemSlots;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
@@ -16,7 +17,7 @@ public sealed partial class ShuttleRecordsConsoleComponent : Component
     public SoundSpecifier ConfirmSound = new SoundPathSpecifier("/Audio/Effects/Cargo/ping.ogg");
 
     /// <summary>
-    /// This percentage is used to calculate the amount of spesos required to make a new copy using the
+    /// This percentage is used to calculate the amount of credits required to make a new copy using the
     /// shuttle records system. This allows large ships to cost more than smaller ships.
     /// </summary>
     [DataField]
@@ -46,3 +47,4 @@ public sealed partial class ShuttleRecordsConsoleComponent : Component
     [DataField]
     public SectorBankAccount Account;
 }
+// _CS End

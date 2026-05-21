@@ -1,3 +1,4 @@
+// _CS Start
 using System.Linq;
 using System.Numerics;
 using Content.Client.UserInterface.Controls;
@@ -148,9 +149,9 @@ namespace Content.Client.VendingMachines.UI
                 // Frontier: unlimited vending
                 string itemText;
                 if (entry.Amount != uint.MaxValue)
-                    itemText = $"[{BankSystemExtensions.ToSpesoString(cost)}] {itemName} [{entry.Amount}]";
+                    itemText = $"[{BankSystemExtensions.ToCreditString(cost)}] {itemName} [{entry.Amount}]";
                 else
-                    itemText = $"[{BankSystemExtensions.ToSpesoString(cost)}] {itemName}";
+                    itemText = $"[{BankSystemExtensions.ToCreditString(cost)}] {itemName}";
                 // End Frontier: unlimited vending
                 _amounts[entry.ID] = entry.Amount;
 
@@ -171,14 +172,14 @@ namespace Content.Client.VendingMachines.UI
         // Frontier
         public void UpdateBalance(int balance)
         {
-            BalanceLabel.Text = BankSystemExtensions.ToSpesoString(balance);
+            BalanceLabel.Text = BankSystemExtensions.ToCreditString(balance);
         }
 
         public void UpdateCashSlotBalance(int? balance)
         {
             CashSlotControls.Visible = balance != null;
             if (balance != null)
-                CashSlotLabel.Text = BankSystemExtensions.ToSpesoString(balance.Value);
+                CashSlotLabel.Text = BankSystemExtensions.ToCreditString(balance.Value);
         }
         // End Frontier
 
@@ -217,9 +218,9 @@ namespace Content.Client.VendingMachines.UI
 
             var itemName = Identity.Name(dummy, _entityManager);
             if (amount != uint.MaxValue)
-                return $"[{BankSystemExtensions.ToSpesoString(cost)}] {itemName} [{amount}]";
+                return $"[{BankSystemExtensions.ToCreditString(cost)}] {itemName} [{amount}]";
             else
-                return $"[{BankSystemExtensions.ToSpesoString(cost)}] {itemName}";
+                return $"[{BankSystemExtensions.ToCreditString(cost)}] {itemName}";
             // End Frontier
         }
 
@@ -304,3 +305,4 @@ namespace Content.Client.VendingMachines.UI
         public string ItemText = string.Empty;
     }
 }
+// _CS End

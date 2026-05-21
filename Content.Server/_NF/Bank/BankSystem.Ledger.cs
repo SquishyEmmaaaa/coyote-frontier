@@ -1,3 +1,4 @@
+// _CS Start
 using System.Text;
 using Content.Shared._NF.Bank;
 using Content.Shared._NF.Bank.BUI;
@@ -80,12 +81,12 @@ public sealed partial class BankSystem : SharedBankSystem
                 builder.AppendLine(
                     Loc.GetString("ledger-printout-line-item",
                         ("entryType", Loc.GetString($"ledger-entry-type-{income.Type}")),
-                        ("amount", BankSystemExtensions.ToSpesoString(income.Value))
+                        ("amount", BankSystemExtensions.ToCreditString(income.Value))
                     ));
             }
             builder.AppendLine(
                 Loc.GetString("ledger-printout-total-income",
-                    ("amount", BankSystemExtensions.ToSpesoString(accountInfo.TotalIncome))
+                    ("amount", BankSystemExtensions.ToCreditString(accountInfo.TotalIncome))
                 ));
             builder.AppendLine();
             builder.AppendLine(Loc.GetString("ledger-printout-expense-header"));
@@ -94,16 +95,16 @@ public sealed partial class BankSystem : SharedBankSystem
                 builder.AppendLine(
                     Loc.GetString("ledger-printout-line-item",
                         ("entryType", Loc.GetString($"ledger-entry-type-{expense.Type}")),
-                        ("amount", BankSystemExtensions.ToSpesoString(expense.Value))
+                        ("amount", BankSystemExtensions.ToCreditString(expense.Value))
                     ));
             }
             builder.AppendLine(
                 Loc.GetString("ledger-printout-total-expenses",
-                    ("amount", BankSystemExtensions.ToSpesoString(accountInfo.TotalExpenses))
+                    ("amount", BankSystemExtensions.ToCreditString(accountInfo.TotalExpenses))
                 ));
             builder.AppendLine(
                 Loc.GetString("ledger-printout-balance",
-                    ("amount", BankSystemExtensions.ToSpesoString(accountInfo.TotalIncome - accountInfo.TotalExpenses))
+                    ("amount", BankSystemExtensions.ToCreditString(accountInfo.TotalIncome - accountInfo.TotalExpenses))
                 ));
             builder.AppendLine();
         }
@@ -112,3 +113,4 @@ public sealed partial class BankSystem : SharedBankSystem
 }
 
 public sealed class SectorLedgerUpdatedEvent : EntityEventArgs;
+// _CS End

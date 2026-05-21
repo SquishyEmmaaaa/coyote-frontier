@@ -1,3 +1,4 @@
+<!-- _CS Start -->
 <Document>
 # Medical Bounties
 
@@ -23,7 +24,7 @@ In order to safely transport the bodies, [bold]before the bounty can be redeemed
 
 Once the bountied asset is stable, they'll likely remain in a catatonic state. Don't worry, this is normal, and you will not be held liable for malpractice.
 
-When you are ready to redeem the bounty, return the asset to the nearest [color=#469bbd]body retrieval unit[/color]. Simply insert the revived asset into the unit. [color=#d40606]Both lights[/color] should be on. Open the panel on the unit and hit the "Redeem" button, and enjoy the hard-earned spesos.
+When you are ready to redeem the bounty, return the asset to the nearest [color=#469bbd]body retrieval unit[/color]. Simply insert the revived asset into the unit. [color=#d40606]Both lights[/color] should be on. Open the panel on the unit and hit the "Redeem" button, and enjoy the hard-earned credits.
 
 <Box>
 <GuideEntityEmbed Entity="MachineMedicalBountyRedemption"/>
@@ -34,3 +35,4 @@ When you are ready to redeem the bounty, return the asset to the nearest [color=
 Starting in 2472, safety initiatives within Nanotrasen promoted the creation of LifeSavior emergency medical pods, for use in catastrophic incidents aboard stations and shuttles. This initiative ended two years ago due to mounting pressure over unfounded, unprovable claims that emergency pod-based fatalities outnumbered saved lives by 5:1.
 
 </Document>
+<!-- _CS End -->

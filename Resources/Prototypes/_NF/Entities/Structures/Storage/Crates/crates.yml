@@ -1,3 +1,4 @@
+# _CS Start
 - type: entity
   parent: CrateBaseWeldable
   id: CratePlasticBiodegradable
@@ -14,7 +15,7 @@
     containers:
     - entity_storage
   - type: StaticPrice
-    price: 15 # 12 spesos at 0.75x, proportional to the plastic crate if deconstructable for 1 sheet
+    price: 15 # 12 credits at 0.75x, proportional to the plastic crate if deconstructable for 1 sheet
   - type: Paintable
     group: CratePlastic
 
@@ -178,3 +179,4 @@
   components:
   - type: AccessReader
     access: [["Engineering"]]
+# _CS End

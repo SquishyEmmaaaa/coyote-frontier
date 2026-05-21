@@ -1665,9 +1665,9 @@ public sealed class RoleplayIncentiveSystem : EntitySystem
 
         // CASH BONUS! We check how much cash you made with this payward,
         // and give them a bonus flarpi for every X amount of cash earned.
-        // but... its a diminishing returns system, start at 1 per 5000 spesos,
-        // then after 3 of them its 1 per 10000 spesos,
-        // then after 6 of them its 1 per 20000 spesos, so on and so forth.
+        // but... its a diminishing returns system, start at 1 per 5000 credits,
+        // then after 3 of them its 1 per 10000 credits,
+        // then after 6 of them its 1 per 20000 credits, so on and so forth.
         int cashEarned = payDetails.FinalPay;
         int cashThreshold = 5000;
         int flarpiFromCash = 0;

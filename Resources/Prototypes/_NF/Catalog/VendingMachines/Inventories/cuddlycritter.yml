@@ -1,3 +1,4 @@
+# _CS Start
 - type: vendingMachineInventory
   id: CuddlyCritterVendInventory
   startingInventory:
@@ -62,6 +63,7 @@
     MysterySpaceBladeBox: 10
   contrabandInventory:
     PlushieLamp: 3
+    LampLava: 3
     CrazyGlue: 1
   emaggedInventory:
     PlushieJester: 3
@@ -74,3 +76,4 @@
     NFPlushieBotanist: 3
     NFPlushieCmo: 3
     NFPlushieEngineer: 3
+# _CS End

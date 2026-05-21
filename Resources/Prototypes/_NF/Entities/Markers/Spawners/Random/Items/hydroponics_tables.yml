@@ -1,3 +1,4 @@
+# _CS Start
 #region Clutter
 - type: entityTable
   id: TableDungeonLootHydroponicsClutter
@@ -61,9 +62,9 @@
       - id: BeeSeeds
       - id: CoffeeSeeds
       - id: EveryspiceSeeds
-      - id: SpesosTreeSeeds
+      - id: CreditsTreeSeeds
       - id: WheatSeeds
-      - id: SpesosTreeSeeds
+      - id: CreditsTreeSeeds
       - id: OatSeeds
       - id: BananaSeeds
       - id: CarrotSeeds
@@ -361,3 +362,4 @@
         weight: 0.1
       - id: HydroponicsTrayFlatpack
         weight: 0.05
+# _CS End

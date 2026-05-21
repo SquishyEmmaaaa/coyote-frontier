@@ -1,3 +1,4 @@
+# _CS Start
 ## UI
 bank-atm-menu-title = NT Galactic Bank
 bank-atm-menu-balance-label = Balance:{" "}
@@ -38,3 +39,7 @@ bank-atm-menu-cash-error = ERR: INVALID
 ## ATM entity
 bank-ATM-cashSlot = Cash Slot
 station-bank-ATM-cashSlot = Cash Slot
+
+bank-currency-display-credits = Credits
+bank-currency-display-credits-fake = Counterfeit Credits
+# _CS End

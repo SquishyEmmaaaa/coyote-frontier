@@ -1,3 +1,4 @@
+# _CS Start
 figurines-hop-1 = Papers, please.
 figurines-hop-2 = You are fired.
 figurines-hop-3 = BRB.
@@ -103,7 +104,7 @@ figurines-lawyer-5 = Sign the contract first.
 figurines-cargotech-1 = DRAGON ON ATS!
 figurines-cargotech-2 = I sold the station!
 figurines-cargotech-3 = Brain bounty? I don't have a brain.
-figurines-cargotech-4 = You're worth 3000 spesos. Congrats.
+figurines-cargotech-4 = You're worth 3000 credits. Congrats.
 figurines-cargotech-5 = Vegetable bounty? Nobody eats those anyways.
 figurines-cargotech-6 = WE ARE SECEDING!! ALL HAIL CARGONIA!!
 
@@ -211,7 +212,7 @@ figurines-chaplain-6 = Vampires aren't real.
 figurines-chef-1 = I swear it's not human meat.
 figurines-chef-2 = More banana cream pies?
 figurines-chef-3 = How does rotary sushi sound?
-figurines-chef-4 = That'll be 1000 spesos
+figurines-chef-4 = That'll be 1000 credits
 figurines-chef-5 = For here or to go?
 figurines-chef-6 = Where'd Pun Pun go? No idea...
 
@@ -316,3 +317,4 @@ figurines-hamlet-5 = Pip!
 figurines-hamlet-6 = Fwiep!
 figurines-hamlet-7 = Heep!
 figurines-hamlet-8 = NOT THE MICROWAVE!
+# _CS End

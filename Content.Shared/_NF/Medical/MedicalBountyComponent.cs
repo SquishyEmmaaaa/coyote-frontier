@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Shared._NF.Medical.Prototypes;
 
 namespace Content.Server._NF.Medical.Components;
@@ -14,7 +15,7 @@ public sealed partial class MedicalBountyComponent : Component
     public MedicalBountyPrototype? Bounty = null;
 
     /// <summary>
-    /// Maximum bounty value for this entity in spesos.
+    /// Maximum bounty value for this entity in credits.
     /// Cached from bounty params on generation.
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
@@ -25,3 +26,4 @@ public sealed partial class MedicalBountyComponent : Component
     /// </summary>
     public bool BountyInitialized;
 }
+// _CS End

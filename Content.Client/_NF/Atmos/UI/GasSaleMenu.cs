@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Client.UserInterface.Controls;
 using Content.Shared._NF.Bank;
 using Content.Shared.Atmos;
@@ -69,7 +70,7 @@ public sealed partial class GasSaleMenu : FancyWindow
             Gases.Children.Add(noGasLabel);
         }
 
-        AppraisalLabel.Text = BankSystemExtensions.ToSpesoString(appraisal);
+        AppraisalLabel.Text = BankSystemExtensions.ToCreditString(appraisal);
     }
 
     public void SetEnabled(bool enabled)
@@ -87,3 +88,4 @@ public sealed partial class GasSaleMenu : FancyWindow
         RefreshRequested?.Invoke();
     }
 }
+// _CS End

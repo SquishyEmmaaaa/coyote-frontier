@@ -1,3 +1,4 @@
+// _CS Start
 using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -207,7 +208,7 @@ public sealed partial class BountyContractSystem : SharedBountyContractSystem
                 ? $"{contract.Name} ({contract.Vessel})"
                 : contract.Name;
             var msg = Loc.GetString(announcement,
-                ("target", target), ("reward", BankSystemExtensions.ToSpesoString(contract.Reward)), ("title", title ?? "???"));
+                ("target", target), ("reward", BankSystemExtensions.ToCreditString(contract.Reward)), ("title", title ?? "???"));
 
             var pdaList = EntityQueryEnumerator<CartridgeLoaderComponent>();
             while (pdaList.MoveNext(out var loaderUid, out var loaderComp))
@@ -226,7 +227,7 @@ public sealed partial class BountyContractSystem : SharedBountyContractSystem
                 ? $"{contract.Name} ({contract.Vessel})"
                 : contract.Name;
             var msg = Loc.GetString(announcement,
-                ("target", target), ("reward", BankSystemExtensions.ToSpesoString(contract.Reward)), ("title", title ?? "???"));
+                ("target", target), ("reward", BankSystemExtensions.ToCreditString(contract.Reward)), ("title", title ?? "???"));
             var color = Color.FromHex("#D7D7BE");
             _chat.DispatchGlobalAnnouncement(msg, sender, false, colorOverride: color);
         }
@@ -346,3 +347,4 @@ public sealed partial class BountyContractSystem : SharedBountyContractSystem
         }
     }
 }
+// _CS End

@@ -1,3 +1,4 @@
+<!-- _CS Start -->
 <Document>
   # SolGov Galactic Bank
 
@@ -9,7 +10,7 @@ Money that you [bold]deposit[/bold] at an [color=#44cc00]ATM[/color] on Nash Sta
     <GuideEntityEmbed Entity="ComputerBankATM"/>
     <GuideEntityEmbed Entity="SpaceCash1000"/>
   </Box>
-  You can access your personal bank account at any time to withdraw your hard-earned [color=#44cc00]Spesos[/color] at any [color=#44cc00]Galactic Bank ATM[/color].
+  You can access your personal bank account at any time to withdraw your hard-earned [color=#44cc00]Credits[/color] at any [color=#44cc00]Galactic Bank ATM[/color].
 
 Only ATMs on Nash Station allow you to deposit money.
 Make sure you deposit your cash and sell off your ship before ending your shift!
@@ -22,6 +23,7 @@ Make sure you deposit your cash and sell off your ship before ending your shift!
   </Box>
   Your bank account can be used through [color=#44cc00]Galactic Bank ATMs[/color], [color=#44cc00]cargo computers[/color], and [color=#44cc00]vending machines[/color].
 
-When trading with other people, you'll usually deal in stacks of [color=#44cc00]Spesos[/color].
+When trading with other people, you'll usually deal in stacks of [color=#44cc00]Credits[/color].
 Be sure to deposit these at an [color=#44cc00]ATM[/color] before ending your shift.
 </Document>
+<!-- _CS End -->

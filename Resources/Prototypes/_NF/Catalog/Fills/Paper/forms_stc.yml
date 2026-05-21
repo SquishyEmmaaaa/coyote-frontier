@@ -1,3 +1,4 @@
+# _CS Start
 # MD Forms
 # Sources: https://discord.com/channels/1123826877245694004/1320690625233948672/1320690625233948672
 #          https://discord.com/channels/1123826877245694004/1298995036435910698/1298995036435910698
@@ -60,7 +61,7 @@
 
         [head=2]Infraction:[/head] Dock Loitering
 
-        [head=2]Amount of Fine:[/head] 10,000 spesos
+        [head=2]Amount of Fine:[/head] 10,000 credits
 
 
         [bold]Notes:[/bold]
@@ -103,7 +104,7 @@
 
         [head=2]Infraction:[/head] Reckless Operation
 
-        [head=2]Amount of Fine:[/head] 2,500 spesos
+        [head=2]Amount of Fine:[/head] 2,500 credits
 
 
         [bold]Notes:[/bold]
@@ -204,3 +205,4 @@
 
 
         [color=#AAAAAA]This Form is void without the signature and stamp of Frontier Command (Sheriff or Station Representative)[/color]
+# _CS End

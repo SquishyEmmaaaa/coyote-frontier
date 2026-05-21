@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Server._NF.Medical.Components;
 using Content.Server.Popups;
 using Content.Shared._NF.Bank;
@@ -68,7 +69,7 @@ public sealed class MedicalBountyPriceGunSystem : EntitySystem
     {
         if (TryComp<MedicalBountyComponent>(target, out var bounty))
         {
-            _popupSystem.PopupEntity(Loc.GetString("medical-price-gun-pricing-result", ("object", Identity.Entity(target, EntityManager)), ("price", BankSystemExtensions.ToSpesoString(bounty.MaxBountyValue))), user, user);
+            _popupSystem.PopupEntity(Loc.GetString("medical-price-gun-pricing-result", ("object", Identity.Entity(target, EntityManager)), ("price", BankSystemExtensions.ToCreditString(bounty.MaxBountyValue))), user, user);
         }
         else
         {
@@ -76,3 +77,4 @@ public sealed class MedicalBountyPriceGunSystem : EntitySystem
         }
     }
 }
+// _CS End

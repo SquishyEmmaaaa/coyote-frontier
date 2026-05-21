@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Client.Stylesheets;
 using Content.Shared._NF.Bank;
 using Content.Shared._NF.BountyContracts;
@@ -91,7 +92,7 @@ public sealed partial class BountyContractUiFragmentListEntry : Control
         }
         else
         {
-            BountyReward.Text = BankSystemExtensions.ToSpesoString(contract.Reward);
+            BountyReward.Text = BankSystemExtensions.ToCreditString(contract.Reward);
             BountyReward.Visible = true;
         }
 
@@ -107,3 +108,4 @@ public sealed partial class BountyContractUiFragmentListEntry : Control
         BountyCategory.Text = category;
     }
 }
+// _CS End

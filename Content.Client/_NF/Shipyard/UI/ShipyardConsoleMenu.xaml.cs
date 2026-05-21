@@ -1,3 +1,4 @@
+// _CS Start
 using System.Linq;
 using Content.Client.UserInterface.Controls;
 using Content.Client._NF.Shipyard.BUI;
@@ -137,7 +138,7 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
             if (free)
                 priceText = Loc.GetString("shipyard-console-menu-listing-free");
             else
-                priceText = BankSystemExtensions.ToSpesoString(prototype!.Price);
+                priceText = BankSystemExtensions.ToCreditString(prototype!.Price);
 
             var vesselEntry = new VesselRow
             {
@@ -291,12 +292,12 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
 
     public void UpdateState(ShipyardConsoleInterfaceState state)
     {
-        BalanceLabel.Text = BankSystemExtensions.ToSpesoString(state.Balance);
+        BalanceLabel.Text = BankSystemExtensions.ToCreditString(state.Balance);
         var shipPrice = 0;
         if (!state.FreeListings)
             shipPrice = state.ShipSellValue;
 
-        ShipAppraisalLabel.Text = $"{BankSystemExtensions.ToSpesoString(shipPrice)}";
+        ShipAppraisalLabel.Text = $"{BankSystemExtensions.ToCreditString(shipPrice)}";
         SellShipButton.Disabled = state.ShipDeedTitle == null;
         TargetIdButton.Text = state.IsTargetIdPresent
             ? Loc.GetString("id-card-console-window-eject-button")
@@ -314,3 +315,4 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
         PopulateProducts(_lastAvailableProtos, _lastUnavailableProtos, _freeListings, _validId);
     }
 }
+// _CS End

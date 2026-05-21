@@ -1,3 +1,4 @@
+// _CS Start
 using System.Threading;
 using Content.Server.Preferences.Managers;
 using Content.Server.GameTicking;
@@ -100,7 +101,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// Attempts to add money to a character's bank account. This should always be used instead of attempting to modify the bankaccountcomponent directly
     /// </summary>
     /// <param name="mobUid">The UID that the bank account is connected to, typically the player controlled mob</param>
-    /// <param name="amount">The amount of spesos to remove from the bank account</param>
+    /// <param name="amount">The amount of credits to remove from the bank account</param></param>
     /// <returns>true if the transaction was successful, false if it was not</returns>
     public bool TryBankDeposit(EntityUid mobUid, int amount)
     {
@@ -152,7 +153,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// <param name="session">The session of the player making the withdrawal.</param>
     /// <param name="prefs">The preferences storing the character whose bank will be changed.</param>
     /// <param name="profile">The profile of the character whose account is being withdrawn.</param>
-    /// <param name="amount">The number of spesos to be withdrawn.</param>
+    /// <param name="amount">The number of credits to be withdrawn.</param>
     /// <param name="newBalance">The new value of the bank account.</param>
     /// <returns>true if the transaction was successful, false if it was not.  When successful, newBalance contains the character's new balance.</returns>
     public bool TryBankWithdraw(ICommonSession session, PlayerPreferences prefs, HumanoidCharacterProfile profile, int amount, [NotNullWhen(true)] out int? newBalance)
@@ -195,7 +196,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// <param name="session">The session of the player making the deposit.</param>
     /// <param name="prefs">The preferences storing the character whose bank will be changed.</param>
     /// <param name="profile">The profile of the character whose account is being withdrawn.</param>
-    /// <param name="amount">The number of spesos to be deposited.</param>
+    /// <param name="amount">The number of credits to be deposited.</param>
     /// <param name="newBalance">The new value of the bank account.</param>
     /// <returns>true if the transaction was successful, false if it was not.  When successful, newBalance contains the character's new balance.</returns>
     public bool TryBankDeposit(ICommonSession session, PlayerPreferences prefs, HumanoidCharacterProfile profile, int amount, [NotNullWhen(true)] out int? newBalance)
@@ -226,7 +227,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// Retrieves a character's balance via its in-game entity, if it has one.
     /// </summary>
     /// <param name="ent">The UID that the bank account is connected to, typically the player controlled mob</param>
-    /// <param name="balance">When successful, contains the account balance in spesos. Otherwise, set to 0.</param>
+    /// <param name="balance">When successful, contains the account balance in credits. Otherwise, set to 0.</param>
     /// <returns>true if the account was successfully queried.</returns>
     public bool TryGetBalance(EntityUid ent, out int balance)
     {
@@ -253,7 +254,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// Retrieves a character's balance via a player's session.
     /// </summary>
     /// <param name="session">The session of the player character to query.</param>
-    /// <param name="balance">When successful, contains the account balance in spesos. Otherwise, set to 0.</param>
+    /// <param name="balance">When successful, contains the account balance in credits. Otherwise, set to 0.</param>
     /// <returns>true if the account was successfully queried.</returns>
     public bool TryGetBalance(ICommonSession session, out int balance)
     {
@@ -329,3 +330,4 @@ public sealed partial class BankSystem : SharedBankSystem
         _prefsManager.RefreshPreferencesAsync(args.PlayerSession, cts);
     }
 }
+// _CS End

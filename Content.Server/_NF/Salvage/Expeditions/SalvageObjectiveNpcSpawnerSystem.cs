@@ -117,6 +117,9 @@ public sealed class SalvageObjectiveNpcSpawnerSystem : EntitySystem
             var tile = candidates[index];
             candidates.RemoveAt(index);
 
+            if (IsReservedLandingZoneTile(gridUid, grid, tile))
+                continue;
+
             if (!_anchorable.TileFree((gridUid, grid), tile, (int)CollisionGroup.MachineLayer, (int)CollisionGroup.MachineLayer))
                 continue;
 
@@ -125,6 +128,26 @@ public sealed class SalvageObjectiveNpcSpawnerSystem : EntitySystem
         }
 
         coords = default;
+        return false;
+    }
+
+    private bool IsReservedLandingZoneTile(EntityUid gridUid, MapGridComponent grid, Vector2i tile)
+    {
+        var mapUid = Transform(gridUid).MapUid;
+        if (mapUid is not { Valid: true } || !TryComp<ExpeditionAtmosphereExclusionComponent>(mapUid, out var exclusion))
+            return false;
+
+        var tileSize = grid.TileSize;
+        var localMin = new Vector2(tile.X * tileSize, tile.Y * tileSize);
+        var localMax = new Vector2((tile.X + 1) * tileSize, (tile.Y + 1) * tileSize);
+        var worldBox = _xforms.GetWorldMatrix(gridUid).TransformBox(new Box2(localMin, localMax));
+
+        foreach (var zone in exclusion.ExcludedZones)
+        {
+            if (zone.Intersects(worldBox))
+                return true;
+        }
+
         return false;
     }
     // _CS End: salvage objective nearby NPC spawn placement

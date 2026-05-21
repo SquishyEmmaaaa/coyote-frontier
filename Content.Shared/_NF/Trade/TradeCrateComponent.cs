@@ -1,3 +1,4 @@
+// _CS Start
 using System.Threading;
 using Content.Shared._NF.Cargo;
 using Robust.Shared.GameStates;
@@ -11,13 +12,13 @@ namespace Content.Shared._NF.Trade;
 public sealed partial class TradeCrateComponent : Component
 {
     /// <summary>
-    /// The value of the crate, in spesos, when delivered to its destination.
+    /// The value of the crate, in credits, when delivered to its destination.
     /// </summary>
     [DataField(serverOnly: true)]
     public int ValueAtDestination;
 
     /// <summary>
-    /// The value of the crate, in spesos, when delivered elsewhere.
+    /// The value of the crate, in credits, when delivered elsewhere.
     /// </summary>
     [DataField(serverOnly: true)]
     public int ValueElsewhere;
@@ -57,3 +58,4 @@ public sealed partial class TradeCrateComponent : Component
     /// </summary>
     public CancellationTokenSource? ExpressCancelToken;
 }
+// _CS End

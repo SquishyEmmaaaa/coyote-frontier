@@ -1,3 +1,4 @@
+// _CS Start
 using System.Linq;
 using Content.Client.Cargo.UI;
 using Content.Client.UserInterface.Controls;
@@ -100,7 +101,7 @@ public sealed partial class NFCargoConsoleMenu : FancyWindow
                     Product = prototype,
                     ProductName = { Text = prototype.Name },
                     MainButton = { ToolTip = prototype.Description },
-                    PointCost = { Text = BankSystemExtensions.ToSpesoString(prototype.Cost) }, // Frontier:
+                    PointCost = { Text = BankSystemExtensions.ToCreditString(prototype.Cost) }, // Frontier:
                     Icon = { Texture = _spriteSystem.Frame0(prototype.Icon) },
                 };
                 button.MainButton.OnPressed += args =>
@@ -183,6 +184,7 @@ public sealed partial class NFCargoConsoleMenu : FancyWindow
     public void UpdateBankData(string name, int bankBalance)
     {
         AccountNameLabel.Text = name;
-        PointsLabel.Text = BankSystemExtensions.ToSpesoString(bankBalance);
+        PointsLabel.Text = BankSystemExtensions.ToCreditString(bankBalance);
     }
 }
+// _CS End

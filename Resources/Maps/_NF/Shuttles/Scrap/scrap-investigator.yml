@@ -1,3 +1,4 @@
+# _CS Start
 meta:
   format: 6
   postmapinit: false
@@ -3878,7 +3879,7 @@ entities:
     - type: Transform
       pos: 11.45693,-1.8921804
       parent: 2
-- proto: SpawnDungeonLootSpesos
+- proto: SpawnDungeonLootCredits
   entities:
   - uid: 199
     components:
@@ -4374,3 +4375,4 @@ entities:
       pos: 10.5,-2.5
       parent: 2
 ...
+# _CS End

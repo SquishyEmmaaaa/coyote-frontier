@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Shared._NF.Bank.BUI;
 using Content.Shared._NF.Bank.Components;
 
@@ -23,7 +24,7 @@ public sealed partial class SectorBankComponent : Component
 public sealed partial class SectorBankAccountInfo
 {
     /// <summary>
-    /// The current balance of the account, in spesos.
+    /// The current balance of the account, in credits.
     /// </summary>
     [DataField]
     public int Balance;
@@ -33,3 +34,4 @@ public sealed partial class SectorBankAccountInfo
     [DataField]
     public int IncreasePerSecond;
 }
+// _CS End

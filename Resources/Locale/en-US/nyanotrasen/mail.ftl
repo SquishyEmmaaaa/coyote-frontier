@@ -1,3 +1,4 @@
+# _CS Start
 mail-recipient-mismatch = Recipient name or job does not match.
 mail-recipient-mismatch-name = Recipient name does not match.
 mail-invalid-access = Recipient name and job match, but access isn't as expected.
@@ -11,10 +12,10 @@ mail-desc-trash-time = If unopened, this can be safely forced open or destroyed 
 mail-desc-trash-imminent = This is considered [color=#886600]Dead Mail[/color] and can be forced open or destroyed for no penalty.
 mail-unlocked = Anti-tamper system unlocked.
 mail-unlocked-by-emag = Anti-tamper system *BZZT*.
-mail-unlocked-reward = Anti-tamper system unlocked. {$bounty} spesos have been added to Frontier account.
-mail-penalty-lock = ANTI-TAMPER LOCK BROKEN. STATION BANK ACCOUNT PENALIZED BY {$credits} SPESOS.
-mail-penalty-fragile = INTEGRITY COMPROMISED. STATION BANK ACCOUNT PENALIZED BY {$credits} SPESOS.
-mail-penalty-expired = DELIVERY PAST DUE. STATION BANK ACCOUNT PENALIZED BY {$credits} SPESOS.
+mail-unlocked-reward = Anti-tamper system unlocked. {$bounty} credits have been added to Frontier account.
+mail-penalty-lock = ANTI-TAMPER LOCK BROKEN. STATION BANK ACCOUNT PENALIZED BY {$credits} CREDITS.
+mail-penalty-fragile = INTEGRITY COMPROMISED. STATION BANK ACCOUNT PENALIZED BY {$credits} CREDITS.
+mail-penalty-expired = DELIVERY PAST DUE. STATION BANK ACCOUNT PENALIZED BY {$credits} CREDITS.
 mail-penalty-trash = DEAD MAIL DISPOSED.
 mail-item-name-unaddressed = mail
 mail-item-name-addressed = mail ({$recipient})
@@ -42,3 +43,4 @@ command-mailto-completion-large = [is-large: true|false]
 command-mailnow = Force all mail teleporters to deliver another round of mail as soon as possible. This will not bypass the undelivered mail limit.
 command-mailnow-help = Usage: {$command}
 command-mailnow-success = Success! All mail teleporters will be delivering another round of mail soon.
+# _CS End

@@ -138,7 +138,12 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         string? errorStackTrace = null;
         try
         {
-            await InternalProcess().ContinueWith((t) => { success = false; errorStackTrace = t.Exception?.InnerException?.StackTrace; }, TaskContinuationOptions.OnlyOnFaulted);
+            await InternalProcess();
+        }
+        catch (Exception e)
+        {
+            success = false;
+            errorStackTrace = e.ToString();
         }
         finally
         {

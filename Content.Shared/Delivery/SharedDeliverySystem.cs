@@ -1,3 +1,4 @@
+// _CS Start
 using System.Linq;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Examine;
@@ -67,9 +68,9 @@ public abstract class SharedDeliverySystem : EntitySystem
         if (ent.Comp.IsLocked)
         {
             var multiplier = GetDeliveryMultiplier(ent);
-            var totalSpesos = Math.Round(ent.Comp.BaseSpesoReward * multiplier);
+            var totalCredits = Math.Round(ent.Comp.BaseSpesoReward * multiplier);
 
-            args.PushMarkup(Loc.GetString("delivery-earnings-examine", ("spesos", totalSpesos)), -1);
+            args.PushMarkup(Loc.GetString("delivery-earnings-examine", ("credits", totalCredits)), -1);
         }
     }
 
@@ -320,3 +321,4 @@ public readonly record struct DeliveryUnlockedEvent(EntityUid User);
 /// </summary>
 [ByRefEvent]
 public readonly record struct DeliveryOpenedEvent(EntityUid User);
+// _CS End

@@ -1,3 +1,4 @@
+# _CS Start
 stack-steel = steel
 stack-bananium = bananium
 stack-glass = glass
@@ -97,7 +98,7 @@ stack-rolling-paper = rolling {$amount ->
 }
 
 stack-fulton = fulton
-stack-credit = speso
+stack-credit = credit
 stack-plasma = plasma
 stack-biomass = biomass
 stack-pyrotton = pyrotton
@@ -234,3 +235,4 @@ stack-astro-snow-floor = astro-snow floor
 stack-large-wood-floor = large wood floor
 stack-red-circuit-floor = red-circuit floor
 stack-asteroid-astro-sand-floor = asteroid astro-sand floor
+# _CS End

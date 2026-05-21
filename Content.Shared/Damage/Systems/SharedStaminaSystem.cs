@@ -1,3 +1,4 @@
+// _CS Start
 using System.Linq;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Alert;
@@ -5,9 +6,11 @@ using Content.Shared.CCVar;
 using Content.Shared.CombatMode;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
+using Content.Shared.Armor;
 using Content.Shared.Database;
 using Content.Shared.Effects;
 using Content.Shared.FixedPoint;
+using Content.Shared.Inventory;
 using Content.Shared.Projectiles;
 using Content.Shared.Rejuvenate;
 using Content.Shared.Rounding;
@@ -189,7 +192,8 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         if (!TryComp<StaminaComponent>(args.Embedded, out var stamina))
             return;
 
-        TakeStaminaDamage(args.Embedded, component.Damage, stamina, source: uid);
+        var damage = ApplyBluntArmorToProjectileStamina(args.Embedded, component.Damage);
+        TakeStaminaDamage(args.Embedded, damage, stamina, source: uid);
     }
 
     private void OnThrowHit(EntityUid uid, StaminaDamageOnCollideComponent component, ThrowDoHitEvent args)
@@ -209,7 +213,19 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         if (ev.Cancelled)
             return;
 
-        TakeStaminaDamage(target, component.Damage, source: uid, sound: component.Sound);
+        var damage = ApplyBluntArmorToProjectileStamina(target, component.Damage);
+        TakeStaminaDamage(target, damage, source: uid, sound: component.Sound);
+    }
+
+    private float ApplyBluntArmorToProjectileStamina(EntityUid target, float damage)
+    {
+        var armorEv = new CoefficientQueryEvent(~SlotFlags.POCKET);
+        RaiseLocalEvent(target, armorEv);
+
+        if (armorEv.DamageModifiers.Coefficients.TryGetValue("Blunt", out var bluntCoefficient))
+            damage *= bluntCoefficient;
+
+        return damage;
     }
 
     private void SetStaminaAlert(EntityUid uid, StaminaComponent? component = null)
@@ -430,3 +446,4 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         _stunSystem.UpdateStunModifiers(ent, ent.Comp.StunModifierThresholds[closest]);
     }
 }
+// _CS End

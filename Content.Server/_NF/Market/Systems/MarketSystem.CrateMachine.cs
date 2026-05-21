@@ -1,4 +1,5 @@
-﻿using Content.Server._NF.CrateMachine;
+// _CS Start
+using Content.Server._NF.CrateMachine;
 using Content.Server._NF.Market.Components;
 using Content.Server._NF.Market.Extensions;
 using Content.Shared._NF.Market;
@@ -70,7 +71,7 @@ public sealed partial class MarketSystem
         var cartBalance = Math.Max(0, MarketDataExtensions.GetMarketValue(consoleComponent.CartDataList, marketMod));
         cartBalance += consoleComponent.TransactionCost;
 
-        // Withdraw spesos from player
+        // Withdraw credits from player
         if (!_bankSystem.TryBankWithdraw(player, cartBalance))
         {
             _popup.PopupEntity(Loc.GetString("market-insufficient-funds"), consoleUid, player);
@@ -118,3 +119,4 @@ public sealed partial class MarketSystem
         itemSpawner.ItemsToSpawn = [];
     }
 }
+// _CS End

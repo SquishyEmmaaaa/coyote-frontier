@@ -1,10 +1,11 @@
+# _CS Start
 - type: seed
-  id: spesos
-  name: seeds-spesos-name
+  id: credits
+  name: seeds-credits-name
   noun: seeds-noun-seeds
-  displayName: seeds-spesos-display-name
+  displayName: seeds-credits-display-name
   plantRsi: _NF/Objects/Specific/Hydroponics/spesostree.rsi
-  packetPrototype: SpesosTreeSeeds
+  packetPrototype: CreditsTreeSeeds
   productPrototypes:
     - GoldLeaf
   harvestRepeat: Repeat
@@ -231,3 +232,4 @@
       Min: 4
       Max: 12
       PotencyDivisor: 20
+# _CS End

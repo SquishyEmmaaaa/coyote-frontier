@@ -1,6 +1,7 @@
+<!-- _CS Start -->
 <Document>
   # Cargo Bounties
-  While [textlink="Cargo" link="Cargo"] can make [color=cyan]spesos[color] selling just about anything, more spesos can be made by fulfilling [color=cyan]bounties[/color] found through the Cargo Bounty Computer.
+  While [textlink="Cargo" link="Cargo"] can make [color=cyan]credits[/color] selling just about anything, more credits can be made by fulfilling [color=cyan]bounties[/color] found through the Cargo Bounty Computer.
 
   ## Starting Bounties
 
@@ -43,3 +44,4 @@
 
   When you return, there should be a new bounty to take its place.
 </Document>
+<!-- _CS End -->

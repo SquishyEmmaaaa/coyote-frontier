@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Client.GameTicking.Managers;
 using Content.Shared.PDA;
 using Robust.Shared.Utility;
@@ -183,7 +184,7 @@ namespace Content.Client.PDA
             StationNameLabel.SetMarkup(Loc.GetString("comp-pda-ui-station",
                 ("station", _stationName)));
 
-            _balance = BankSystemExtensions.ToSpesoString(state.Balance); // Frontier
+            _balance = BankSystemExtensions.ToCreditString(state.Balance); // Frontier
             BalanceLabel.SetMarkup(Loc.GetString("comp-pda-ui-balance", ("balance", _balance))); // Frontier
 
             _shuttleDeed = state.OwnedShipName ?? ""; // Frontier
@@ -404,3 +405,4 @@ namespace Content.Client.PDA
         }
     }
 }
+// _CS End

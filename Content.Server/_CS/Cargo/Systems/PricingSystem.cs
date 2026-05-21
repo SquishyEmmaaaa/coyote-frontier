@@ -147,13 +147,13 @@ public sealed partial class PricingSystem
 
             // 5. Output
             shell.WriteLine($"Grid {gid}:");
-            shell.WriteLine($"  Raw appraisal: {rawAppraisal:F2} spesos");
+            shell.WriteLine($"  Raw appraisal: {rawAppraisal:F2} credits");
             shell.WriteLine($"  Tile count: {tileCount}");
             shell.WriteLine($"  Markup: {markup:F2}x");
-            shell.WriteLine($"  Price per tile: {pricePerTile} spesos/tile");
+            shell.WriteLine($"  Price per tile: {pricePerTile} credits/tile");
             shell.WriteLine($"  Exped capable: {expedCapable}");
             shell.WriteLine($"  Donk capable: {donkCapable}");
-            shell.WriteLine($"  Modified appraisal: {modifiedInt:F2} spesos");
+            shell.WriteLine($"  Modified appraisal: {modifiedInt:F2} credits");
             shell.WriteLine("");
         }
     }

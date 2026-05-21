@@ -1,3 +1,4 @@
+// _CS Start
 using System.Numerics;
 using Content.Server.Shuttles.Components;
 using Content.Shared._Goobstation.Vehicles;
@@ -236,38 +237,23 @@ public sealed partial class RadarBlipSystem : EntitySystem
         while (blipQuery.MoveNext(out var blipUid, out var blip, out var blipXform))
         {
             if (!blip.Enabled)
-            {
-                Log.Debug($"Blip {blipUid} skipped: not enabled.");
                 continue;
-            }
 
             if (blipXform.MapID != radarMapId)
-            {
-                Log.Debug($"Blip {blipUid} skipped: different map.");
                 continue;
-            }
 
             // Run cheaper grid checks before distance checks
             var blipGrid = blipXform.GridUid;
             if (blip.RequireNoGrid && blipGrid != null)
-            {
-                Log.Debug($"Blip {blipUid} skipped: has grid but requires none.");
                 continue;
-            }
 
             if (!blip.VisibleFromOtherGrids && blipGrid != radarGrid)
-            {
-                Log.Debug($"Blip {blipUid} skipped: not on same grid as radar.");
                 continue;
-            }
 
             var blipPosition = _xform.GetWorldPosition(blipUid);
             var distance = (blipPosition - radarPosition).Length();
             if (distance > radarRange)
-            {
-                Log.Debug($"Blip {blipUid} skipped: out of range.");
                 continue;
-            }
 
             // Convert blip position to grid coords if needed.
             NetEntity? blipNetGrid = null;
@@ -341,3 +327,4 @@ public sealed partial class RadarBlipSystem : EntitySystem
         SetupRadarBlip(uid, Color.Cyan, 1f, true, true);
     }
 }
+// _CS End

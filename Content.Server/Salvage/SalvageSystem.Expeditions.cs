@@ -112,12 +112,14 @@ public sealed partial class SalvageSystem
         // Ensure any old shuttle pause cache for a reused map UID cannot affect a fresh expedition.
         ClearPausedShuttleCacheForMap(uid);
         component.SelectedSong = _audio.ResolveSound(component.Sound);
+        InitExpeditionWeather(uid, component);
     }
 
     private void OnExpeditionShutdown(EntityUid uid, SalvageExpeditionComponent component, ComponentShutdown args)
     {
         // Drop shuttle pause cache when expedition map is shutting down.
         ClearPausedShuttleCacheForMap(uid);
+        StopExpeditionWeather(uid, component);
 
         // component.Stream = _audio.Stop(component.Stream); // _CS: moved to client
 

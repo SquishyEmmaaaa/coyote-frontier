@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Shared.Cargo.Prototypes;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
@@ -25,13 +26,13 @@ public sealed partial class DeliveryComponent : Component
     public bool IsLocked = true;
 
     /// <summary>
-    /// The base amount of spesos that gets added to the station bank account on unlock.
+    /// The base amount of credits that gets added to the station bank account on unlock.
     /// </summary>
     [DataField, AutoNetworkedField]
     public int BaseSpesoReward = 500;
 
     /// <summary>
-    /// The base amount of spesos that will be removed from the station bank account on a penalized delivery
+    /// The base amount of credits that will be removed from the station bank account on a penalized delivery
     /// </summary>
     [DataField, AutoNetworkedField]
     public int BaseSpesoPenalty = 250;
@@ -87,3 +88,4 @@ public sealed partial class DeliveryComponent : Component
     [DataField]
     public string Container = "delivery";
 }
+// _CS End

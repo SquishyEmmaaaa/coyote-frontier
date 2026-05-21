@@ -1,3 +1,4 @@
+// _CS Start
 using Content.Server.Administration;
 using Content.Server.Body.Systems;
 using Content.Server.Cargo.Components;
@@ -81,11 +82,11 @@ public sealed partial class PricingSystem : EntitySystem // Coyote: Add Partial
                     mostValuable.Pop();
             });
 
-            shell.WriteLine($"Grid {gid} appraised to {value} spesos.");
+            shell.WriteLine($"Grid {gid} appraised to {value} credits.");
             shell.WriteLine($"The top most valuable items were:");
             foreach (var (price, ent) in mostValuable)
             {
-                shell.WriteLine($"- {ToPrettyString(ent)} @ {price} spesos");
+                shell.WriteLine($"- {ToPrettyString(ent)} @ {price} credits");
             }
         }
     }
@@ -454,3 +455,4 @@ public sealed partial class PricingSystem : EntitySystem // Coyote: Add Partial
         return price;
     }
 }
+// _CS End
