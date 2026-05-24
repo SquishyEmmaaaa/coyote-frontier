@@ -7,10 +7,6 @@
 
   # Functional
   extraModuleCount: 5
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleScience #until sciborgs are added
 
   defaultModules:
   - BorgModuleTool
@@ -42,10 +38,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleEngineering
 
   defaultModules:
   - BorgModuleTool
@@ -79,10 +71,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleCargo
 
   defaultModules:
   - BorgModuleTool
@@ -117,10 +105,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleJanitor
 
   defaultModules:
   - BorgModuleTool
@@ -154,10 +138,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleMedical
 
   defaultModules:
   - BorgModuleTool
@@ -208,10 +188,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleService
 
   defaultModules:
   - BorgModuleTool
@@ -251,10 +227,6 @@
 
   # Functional
   extraModuleCount: 5
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleScience
 
   defaultModules:
   - BorgModuleTool
@@ -293,10 +265,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleEngineering
 
   defaultModules:
   - BorgModuleTool
@@ -338,10 +306,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleCargo
 
   defaultModules:
   - BorgModuleTool
@@ -383,10 +347,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleJanitor
 
   defaultModules:
   - BorgModuleTool
@@ -427,10 +387,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleMedical
 
   defaultModules:
   - BorgModuleTool
@@ -486,10 +442,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleService
 
   defaultModules:
   - BorgModuleTool
@@ -536,10 +488,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleCargo
 
   defaultModules:
   - BorgModuleTool
@@ -581,10 +529,6 @@
 
   # Functional
   extraModuleCount: 3
-  moduleWhitelist:
-    tags:
-    - BorgModuleGeneric
-    - BorgModuleCargo
 
   defaultModules:
   - BorgModuleTool
