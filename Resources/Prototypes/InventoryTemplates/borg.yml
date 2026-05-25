@@ -17,6 +17,7 @@
     uiWindowPos: 2,1
     strippingWindowPos: 2,4
     displayName: ID
+# Coyote: Give borgs the ability to wear a backpack
   - name: back
     slotTexture: back
     fullTextureName: template_small
@@ -47,6 +48,7 @@
     uiWindowPos: 2,1
     strippingWindowPos: 2,4
     displayName: ID
+# Coyote: Give borgs the ability to wear a backpack
   - name: back
     slotTexture: back
     fullTextureName: template_small
@@ -77,6 +79,7 @@
     uiWindowPos: 2,1
     strippingWindowPos: 2,4
     displayName: ID
+# Coyote: Give borgs the ability to wear a backpack
   - name: back
     slotTexture: back
     fullTextureName: template_small
@@ -108,6 +111,7 @@
     uiWindowPos: 2,1
     strippingWindowPos: 2,4
     displayName: ID
+# Coyote: Give borgs the ability to wear a backpack
   - name: back
     slotTexture: back
     fullTextureName: template_small
